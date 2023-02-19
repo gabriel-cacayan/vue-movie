@@ -6,6 +6,8 @@ import { createRouter, createWebHistory } from "vue-router";
 import TheMovie from "./components/pages/TheMovie.vue";
 import HomePage from "./components/pages/HomePage.vue";
 import ThePerson from "./components/pages/ThePerson.vue";
+import NotFound from "./components/NotFound.vue";
+import SearchMovie from "./components/pages/SearchMovie.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -20,16 +22,27 @@ const router = createRouter({
       component: HomePage,
     },
     {
-      path: "/movie/:id",
+      path: "/movie/:id(\\d+)",
       name: "movies.show",
       component: TheMovie,
       props: true,
     },
     {
-      path: "/person/:id",
+      path: "/person/:id(\\d+)",
       name: "persons.show",
       component: ThePerson,
       props: true,
+    },
+    {
+      path: "/search/:search",
+      name: "search",
+      component: SearchMovie,
+      props: true,
+    },
+    {
+      path: "/:pathMatch(.*)*",
+      name: "NotFound",
+      component: NotFound,
     },
   ],
   scrollBehavior(to, from, savedPosition) {

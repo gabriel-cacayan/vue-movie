@@ -3,14 +3,14 @@
     <!-- Search function -->
     <div>
       <v-parallax class="d-flex align-center" height="300" :src="parallaxImage">
-        <v-text-field
+        <!-- <v-text-field
           clearable
           label="Enter your keywords"
           variant="outlined"
           class="w-75 mx-auto"
           v-model="search"
           @keyup.enter="searchMovie"
-        ></v-text-field>
+        ></v-text-field> -->
       </v-parallax>
     </div>
 
@@ -168,9 +168,14 @@ export default {
         "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2F7f%2F10%2F14%2F7f10142cd34718e80d9e257271b452ef.jpg&f=1&nofb=1&ipt=db997dfaff0c5a45a2aad4e6a5b4f9af48ffef0ff72cc308aedaa465430a9d7c&ipo=images",
       topRatedMovies: [],
       upcomingMovies: [],
+      searchMovies: [],
     };
   },
-
+  provide() {
+    return {
+      searchMovies: this.searchMovies,
+    };
+  },
   methods: {
     /**
      *
@@ -199,7 +204,8 @@ export default {
      *
      */
     searchMovie: function () {
-      this.isLoading = true;
+      this.$router.push({ name: "search", params: { search: this.search } });
+
       fetch(
         `
 https://api.themoviedb.org/3/search/movie?api_key=${this.apiKey}&language=en-US&query=${this.search}&page=1&include_adult=false
@@ -207,7 +213,9 @@ https://api.themoviedb.org/3/search/movie?api_key=${this.apiKey}&language=en-US&
       )
         .then((response) => response.json())
         .then((result) => {
-          console.log(result);
+          result.results.forEach((element) => {
+            this.searchMovies.push(element);
+          });
 
           this.isLoading = false;
         })

@@ -72,6 +72,24 @@
 
           <p class="mt-4">{{ personInfo.biography }}</p>
 
+          <!-- Known For -->
+          <div class="mt-10" v-if="personCasts">
+            <v-chip color="#D32F2F" class="font-weight-medium my-4">
+              Known For
+            </v-chip>
+            <!-- List -->
+            <v-list lines="two">
+              <v-list-item
+                v-for="cast in personCasts"
+                :key="cast.id"
+                :subtitle="cast.original_title"
+                :title="cast.character"
+                :prepend-avatar="renderPoster(cast.backdrop_path)"
+                @click="getSpecificMovie(cast.id)"
+              ></v-list-item>
+            </v-list>
+          </div>
+
           <!-- Images -->
           <div class="mt-10" v-if="personImages">
             <v-chip color="#D32F2F" class="font-weight-medium my-4">
@@ -90,33 +108,6 @@
               </v-carousel-item>
             </v-carousel>
           </div>
-
-          <!-- Known For -->
-          <div class="mt-10" v-if="personCasts">
-            <v-chip color="#D32F2F" class="font-weight-medium my-4">
-              Known For
-            </v-chip>
-            <div class="d-flex flex-wrap">
-              <v-sheet
-                v-ripple
-                v-for="(cast, i) in personCasts"
-                :key="i"
-                :width="200"
-                class="ma-2 rounded-lg"
-                @click="getSpecificMovie(cast.id)"
-              >
-                <v-img
-                  :width="200"
-                  :src="renderPoster(cast.backdrop_path)"
-                  :lazy-src="movieImagePlaceholder"
-                  cover
-                ></v-img>
-                <div class="pa-4 text-truncate">
-                  <p class="text-subtitle-1">{{ cast.title }}</p>
-                </div>
-              </v-sheet>
-            </div>
-          </div>
         </div>
       </div>
     </v-container>
@@ -128,8 +119,10 @@ export default {
   inject: [
     "apiKey",
     "renderPoster",
+    "cardImagePlaceholder",
     "movieImagePlaceholder",
     "getSpecificMovie",
+    "transferToCol",
   ],
   props: ["id"],
   data() {
@@ -173,7 +166,7 @@ export default {
       )
         .then((response) => response.json())
         .then((result) => {
-          console.log(result);
+          // console.log(result);
           result.cast.forEach((element) => {
             this.personCasts.push(element);
           });

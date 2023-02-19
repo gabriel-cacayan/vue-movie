@@ -1,0 +1,271 @@
+<template>
+  <v-main>
+    <section class="bg-black h-100">
+      <div v-if="movieInfo" class="d-flex flex-column flex-md-row align-center">
+        <v-img
+          height="500"
+          width="500"
+          :src="renderPoster(movieInfo.backdrop_path)"
+          :lazy-src="movieImagePlaceholder"
+        ></v-img>
+        <div class="pa-4">
+          <h1>{{ movieInfo.original_title }}</h1>
+          <p class="text-grey-darken-1 mb-4">{{ movieInfo.tagline }}</p>
+          <p class="text-grey-lighten-1 mb-4">{{ movieInfo.overview }}</p>
+          <p class="mb-4">
+            Genres:
+            <template v-for="genre in movieInfo.genres" :key="genre.id">
+              <v-chip color="primary">
+                {{ genre.name }}
+              </v-chip>
+            </template>
+          </p>
+          <p class="mb-4">
+            Budget:
+            {{ budget }}
+          </p>
+          <p class="mb-4">
+            Revenue:
+            {{ revenue }}
+          </p>
+          <p class="mb-4">
+            Runtime:
+            {{ runtime }}
+          </p>
+          <!-- <pre>
+      {{ movieInfo }}
+    </pre
+        > -->
+        </div>
+      </div>
+      <div v-else>
+        <p>Loading...</p>
+      </div>
+
+      <!-- Tabs -->
+      <v-card v-if="casts">
+        <v-tabs v-model="tab" color="red-accent-4" align-tabs="title">
+          <v-tab v-for="item in items" :key="item" :value="item">{{
+            item
+          }}</v-tab>
+        </v-tabs>
+        <v-window v-model="tab">
+          <v-window-item value="Casts">
+            <v-row>
+              <v-col v-for="cast in casts" :key="cast.id" :cols="transferToCol">
+                <v-card
+                  class="mx-auto"
+                  hover
+                  v-ripple
+                  max-width="400"
+                  :loading="isLoading"
+                  @click="getPerson(cast.id)"
+                >
+                  <v-img
+                    :src="renderPoster(cast.profile_path)"
+                    :lazy-src="cardImagePlaceholder"
+                    :alt="cast.character"
+                    height="400"
+                    width="400"
+                  ></v-img>
+
+                  <v-card-title>{{ cast.character }}</v-card-title>
+
+                  <v-card-subtitle class="d-flex mb-4">
+                    <p>
+                      {{ cast.original_name }}
+                    </p>
+                  </v-card-subtitle>
+                </v-card>
+              </v-col>
+            </v-row>
+          </v-window-item>
+
+          <v-window-item value="Recommendations">
+            <v-container fluid>
+              <v-row>
+                <v-col
+                  v-for="movie in movies"
+                  :key="movie.id"
+                  :cols="transferToCol"
+                >
+                  <v-card
+                    class="mx-auto"
+                    hover
+                    v-ripple
+                    max-width="344"
+                    :loading="isLoading && movie.id == cardId"
+                    @click="getSpecificMovie(movie.id)"
+                  >
+                    <v-img
+                      :lazy-src="cardImagePlaceholder"
+                      :src="renderPoster(movie.poster_path)"
+                      :alt="movie.poster"
+                      height="344"
+                      cover
+                    ></v-img>
+
+                    <v-card-title>{{ movie.original_title }}</v-card-title>
+
+                    <v-card-subtitle class="d-flex mb-4">
+                      <div>
+                        <v-icon icon="mdi-star" color="#FFFF00"></v-icon>
+                        {{ movie.vote_average }}
+                      </div>
+                      <v-spacer></v-spacer>
+                      <p>
+                        {{ parseInt(movie.release_date) }}
+                      </p>
+                    </v-card-subtitle>
+                  </v-card>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-window-item>
+
+          <v-window-item value="Reviews">
+            <v-container fluid>
+              <v-row>
+                <v-col>
+                  <p>Unavailable at the moment.</p>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-window-item>
+        </v-window>
+      </v-card>
+    </section>
+  </v-main>
+</template>
+
+<script>
+export default {
+  inject: [
+    "transferToCol",
+    "apiKey",
+    "renderPoster",
+    "movieImagePlaceholder",
+    "cardImagePlaceholder",
+  ],
+  props: ["id"],
+  data() {
+    return {
+      movieInfo: null,
+      tab: "Casts",
+      items: ["Casts", "Recommendations", "Reviews"],
+      casts: null,
+      movies: null,
+    };
+  },
+  computed: {
+    budget() {
+      return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+      }).format(this.movieInfo.budget);
+    },
+    revenue() {
+      return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+      }).format(this.movieInfo.revenue);
+    },
+    runtime() {
+      var hours = Math.floor(this.movieInfo.runtime / 60);
+      var minutes = this.movieInfo.runtime % 60;
+      return hours + "h " + minutes + "m";
+    },
+  },
+  methods: {
+    /**
+     *
+     * * Get the primary information about a movie.
+     * @param id int - movie id
+     */
+    getSpecificMovie: function (id) {
+      this.isLoading = true;
+
+      if (this.$route.params.id !== id) {
+        this.$router.push({ name: "movies.show", params: { id: id } });
+      }
+
+      fetch(
+        `https://api.themoviedb.org/3/movie/${id}?api_key=${this.apiKey}&language=en-US`
+      )
+        .then((response) => response.json())
+        .then((result) => {
+          // console.log(result);
+          this.movieInfo = result;
+          this.isLoading = false;
+        })
+        .catch((error) => {
+          // console.error("Error:", error);
+          this.isLoading = false;
+        });
+    },
+    /**
+     *
+     * * Get the cast and crew for a movie.
+     * @param id int - movie id
+     */
+    getCredits: function (id) {
+      this.isLoading = true;
+      fetch(
+        `https://api.themoviedb.org/3/movie/${id}/credits?api_key=${this.apiKey}&language=en-US`
+      )
+        .then((response) => response.json())
+        .then((result) => {
+          // console.log(result.cast);
+          this.casts = result.cast;
+          this.isLoading = false;
+        })
+        .catch((error) => {
+          // console.error("Error:", error);
+          this.isLoading = false;
+        });
+    },
+    /**
+     *
+     * * Get a list of recommended movies for a movie.
+     * @param id int - movie id
+     */
+    getRecommendations: function (id) {
+      // console.log(id);
+      this.isLoading = true;
+      fetch(
+        `https://api.themoviedb.org/3/movie/${id}/recommendations?api_key=${this.apiKey}&language=en-US&page=1`
+      )
+        .then((response) => response.json())
+        .then((result) => {
+          // console.log(result);
+          this.movies = result.results;
+          this.isLoading = false;
+        })
+        .catch((error) => {
+          // console.error("Error:", error);
+          this.isLoading = false;
+        });
+    },
+    /**
+     *
+     * * Get the primary person details by id.
+     * @param id int - cast id
+     */
+    getPerson: function (id) {
+      this.$router.push({ name: "persons.show", params: { id: id } });
+    },
+  },
+  mounted: function () {
+    this.getSpecificMovie(this.id);
+    this.getCredits(this.id);
+    this.getRecommendations(this.id);
+  },
+  updated() {
+    this.tab = "Casts";
+    this.getCredits(this.id);
+    this.getRecommendations(this.id);
+  },
+};
+</script>
+
+<style scoped></style>

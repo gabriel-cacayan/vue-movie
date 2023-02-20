@@ -37,7 +37,7 @@
               <v-card-subtitle class="d-flex mb-4">
                 <div>
                   <v-icon icon="mdi-star" color="#FFFF00"></v-icon>
-                  {{ movie.vote_average }}
+                  {{ Math.round(movie.vote_average) }}
                 </div>
                 <v-spacer></v-spacer>
                 <p>
@@ -77,7 +77,7 @@
               <v-card-subtitle class="d-flex mb-4">
                 <div>
                   <v-icon icon="mdi-star" color="#FFFF00"></v-icon>
-                  {{ movie.vote_average }}
+                  {{ Math.round(movie.vote_average) }}
                 </div>
                 <v-spacer></v-spacer>
                 <p>
@@ -117,7 +117,7 @@
               <v-card-subtitle class="d-flex mb-4">
                 <div>
                   <v-icon icon="mdi-star" color="#FFFF00"></v-icon>
-                  {{ movie.vote_average }}
+                  {{ Math.round(movie.vote_average) }}
                 </div>
                 <v-spacer></v-spacer>
                 <p>

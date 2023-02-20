@@ -1,13 +1,21 @@
 <template>
   <v-main>
-    <v-container class="mt-4" v-if="personInfo">
+    <v-container class="mt-4 pa-0" v-if="personInfo">
       <div class="d-flex flex-column flex-md-row">
-        <div class="d-flex flex-column align-start justify-start">
+        <div class="d-flex flex-column align-start justify-start pa-4">
           <img
+            v-if="personInfo.profile_path"
             class="rounded-lg"
             height="400"
             :src="renderPoster(personInfo.profile_path)"
             :lazy-src="movieImagePlaceholder"
+          />
+
+          <img
+            v-else
+            class="rounded-lg"
+            height="400"
+            :src="cardImagePlaceholder"
           />
 
           <h3 class="mt-4">Personal Info</h3>
@@ -59,22 +67,25 @@
               </template>
             </p>
           </div>
-          <!-- <pre>
-                {{ personInfo }}
-            </pre
-          > -->
         </div>
         <div class="mt-4 mt-md-0 px-md-4">
-          <h1>{{ personInfo.name }}</h1>
-          <v-chip color="#D32F2F" class="font-weight-medium mt-8">
-            Biography
-          </v-chip>
-
-          <p class="mt-4">{{ personInfo.biography }}</p>
+          <div class="pa-4">
+            <h1>{{ personInfo.name }}</h1>
+            <v-chip color="#D32F2F" class="font-weight-medium mt-8">
+              Biography
+            </v-chip>
+            <p class="mt-4">
+              {{
+                personInfo.biography
+                  ? personInfo.biography
+                  : "No data is available to this person."
+              }}
+            </p>
+          </div>
 
           <!-- Known For -->
           <div class="mt-10" v-if="personCasts">
-            <v-chip color="#D32F2F" class="font-weight-medium my-4">
+            <v-chip color="#D32F2F" class="font-weight-medium ma-4">
               Known For
             </v-chip>
             <!-- List -->
@@ -91,8 +102,8 @@
           </div>
 
           <!-- Images -->
-          <div class="mt-10" v-if="personImages">
-            <v-chip color="#D32F2F" class="font-weight-medium my-4">
+          <div class="mt-10" v-if="personImages.length !== 0">
+            <v-chip color="#D32F2F" class="font-weight-medium ma-4">
               Photos
             </v-chip>
             <v-carousel hide-delimiters show-arrows="hover" v-model="model">

@@ -1,6 +1,6 @@
 <template>
   <v-main>
-    <section class="bg-black-4 h-100">
+    <v-container class="bg-black-4 h-100 pa-0">
       <div v-if="movieInfo" class="d-flex flex-column flex-md-row align-center">
         <div>
           <v-img
@@ -24,7 +24,7 @@
           <p class="mb-4">
             Genres:
             <template v-for="genre in movieInfo.genres" :key="genre.id">
-              <v-chip color="primary">
+              <v-chip class="mr-2">
                 {{ genre.name }}
               </v-chip>
             </template>
@@ -45,6 +45,7 @@
       </div>
 
       <!-- Tabs -->
+
       <v-card>
         <v-tabs v-model="tab" color="red-accent-4" align-tabs="title">
           <v-tab v-for="item in items" :key="item" :value="item">{{
@@ -53,35 +54,22 @@
         </v-tabs>
         <v-window v-model="tab">
           <v-window-item v-if="casts" value="Casts">
-            <v-row>
-              <v-col v-for="cast in casts" :key="cast.id" :cols="transferToCol">
-                <v-card
-                  class="mx-auto"
-                  hover
-                  v-ripple
-                  max-width="400"
-                  :loading="isLoading"
-                  @click="getPerson(cast.id)"
-                >
-                  <v-img
-                    :src="renderPoster(cast.profile_path)"
-                    :lazy-src="cardImagePlaceholder"
-                    :alt="cast.character"
-                    height="400"
-                    width="400"
-                    cover
-                  ></v-img>
-
-                  <v-card-title>{{ cast.character }}</v-card-title>
-
-                  <v-card-subtitle class="d-flex mb-4">
-                    <p>
-                      {{ cast.original_name }}
-                    </p>
-                  </v-card-subtitle>
-                </v-card>
-              </v-col>
-            </v-row>
+            <div
+              class="d-flex flex-row pa-4 align-center"
+              v-for="cast in casts"
+              :key="cast.id"
+              @click="getPerson(cast.id)"
+              id="avatars"
+            >
+              <v-avatar
+                :image="renderPoster(cast.profile_path)"
+                size="100"
+              ></v-avatar>
+              <div class="ml-4">
+                <p>{{ cast.character }}</p>
+                <p class="text-grey">{{ cast.original_name }}</p>
+              </div>
+            </div>
           </v-window-item>
 
           <v-window-item v-if="movies" value="Recommendations">
@@ -125,7 +113,7 @@
           </v-window-item>
         </v-window>
       </v-card>
-    </section>
+    </v-container>
   </v-main>
 </template>
 
@@ -259,4 +247,12 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+#avatars {
+  cursor: pointer;
+}
+
+#avatars:hover {
+  background: #424242;
+}
+</style>

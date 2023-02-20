@@ -1,13 +1,22 @@
 <template>
   <v-main>
-    <section class="bg-black h-100">
+    <section class="bg-black-4 h-100">
       <div v-if="movieInfo" class="d-flex flex-column flex-md-row align-center">
-        <v-img
-          height="500"
-          width="500"
-          :src="renderPoster(movieInfo.backdrop_path)"
-          :lazy-src="movieImagePlaceholder"
-        ></v-img>
+        <div>
+          <v-img
+            v-if="movieInfo.backdrop_path"
+            height="500"
+            width="500"
+            :src="renderPoster(movieInfo.backdrop_path)"
+            cover
+          ></v-img>
+          <v-img
+            v-else
+            height="300"
+            width="300"
+            :src="cardImagePlaceholder"
+          ></v-img>
+        </div>
         <div class="pa-4">
           <h1>{{ movieInfo.original_title }}</h1>
           <p class="text-grey-darken-1 mb-4">{{ movieInfo.tagline }}</p>
@@ -32,25 +41,18 @@
             Runtime:
             {{ runtime }}
           </p>
-          <!-- <pre>
-      {{ movieInfo }}
-    </pre
-        > -->
         </div>
-      </div>
-      <div v-else>
-        <p>Loading...</p>
       </div>
 
       <!-- Tabs -->
-      <v-card v-if="casts">
+      <v-card>
         <v-tabs v-model="tab" color="red-accent-4" align-tabs="title">
           <v-tab v-for="item in items" :key="item" :value="item">{{
             item
           }}</v-tab>
         </v-tabs>
         <v-window v-model="tab">
-          <v-window-item value="Casts">
+          <v-window-item v-if="casts" value="Casts">
             <v-row>
               <v-col v-for="cast in casts" :key="cast.id" :cols="transferToCol">
                 <v-card
@@ -67,6 +69,7 @@
                     :alt="cast.character"
                     height="400"
                     width="400"
+                    cover
                   ></v-img>
 
                   <v-card-title>{{ cast.character }}</v-card-title>
@@ -81,56 +84,44 @@
             </v-row>
           </v-window-item>
 
-          <v-window-item value="Recommendations">
-            <v-container fluid>
-              <v-row>
-                <v-col
-                  v-for="movie in movies"
-                  :key="movie.id"
-                  :cols="transferToCol"
+          <v-window-item v-if="movies" value="Recommendations">
+            <v-row>
+              <v-col
+                v-for="movie in movies"
+                :key="movie.id"
+                :cols="transferToCol"
+              >
+                <v-card
+                  class="mx-auto"
+                  hover
+                  v-ripple
+                  max-width="344"
+                  :loading="isLoading && movie.id == cardId"
+                  @click="getSpecificMovie(movie.id)"
                 >
-                  <v-card
-                    class="mx-auto"
-                    hover
-                    v-ripple
-                    max-width="344"
-                    :loading="isLoading && movie.id == cardId"
-                    @click="getSpecificMovie(movie.id)"
-                  >
-                    <v-img
-                      :lazy-src="cardImagePlaceholder"
-                      :src="renderPoster(movie.poster_path)"
-                      :alt="movie.poster"
-                      height="344"
-                      cover
-                    ></v-img>
+                  <v-img
+                    :lazy-src="cardImagePlaceholder"
+                    :src="renderPoster(movie.poster_path)"
+                    :alt="movie.poster"
+                    height="344"
+                    cover
+                  ></v-img>
 
-                    <v-card-title>{{ movie.original_title }}</v-card-title>
+                  <v-card-title>{{ movie.original_title }}</v-card-title>
 
-                    <v-card-subtitle class="d-flex mb-4">
-                      <div>
-                        <v-icon icon="mdi-star" color="#FFFF00"></v-icon>
-                        {{ movie.vote_average }}
-                      </div>
-                      <v-spacer></v-spacer>
-                      <p>
-                        {{ parseInt(movie.release_date) }}
-                      </p>
-                    </v-card-subtitle>
-                  </v-card>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-window-item>
-
-          <v-window-item value="Reviews">
-            <v-container fluid>
-              <v-row>
-                <v-col>
-                  <p>Unavailable at the moment.</p>
-                </v-col>
-              </v-row>
-            </v-container>
+                  <v-card-subtitle class="d-flex mb-4">
+                    <div>
+                      <v-icon icon="mdi-star" color="#FFFF00"></v-icon>
+                      {{ movie.vote_average }}
+                    </div>
+                    <v-spacer></v-spacer>
+                    <p>
+                      {{ parseInt(movie.release_date) }}
+                    </p>
+                  </v-card-subtitle>
+                </v-card>
+              </v-col>
+            </v-row>
           </v-window-item>
         </v-window>
       </v-card>
@@ -152,7 +143,7 @@ export default {
     return {
       movieInfo: null,
       tab: "Casts",
-      items: ["Casts", "Recommendations", "Reviews"],
+      items: ["Casts", "Recommendations"],
       casts: null,
       movies: null,
     };

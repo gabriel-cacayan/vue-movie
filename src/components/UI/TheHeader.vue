@@ -6,10 +6,15 @@
         title="Home"
         :to="{ name: 'home' }"
       ></v-list-item>
+      <v-list-item
+        prepend-icon="mdi-magnify"
+        title="Search"
+        :to="{ name: 'find' }"
+      ></v-list-item>
     </v-list>
   </v-navigation-drawer>
 
-  <v-app-bar :absolute="true" class="pa-2">
+  <v-app-bar :absolute="true" class="pa-2 bg-grey-darken-4">
     <v-app-bar-nav-icon
       @click="drawer = !drawer"
       v-show="breakpoints == 'xs' || breakpoints == 'sm'"
@@ -27,6 +32,12 @@
         :to="{ name: 'home' }"
         class="text-white text-decoration-none mr-5"
         >Home</router-link
+      >
+
+      <router-link
+        :to="{ name: 'find' }"
+        class="text-white text-decoration-none mr-5"
+        >Search</router-link
       >
     </div>
     <v-spacer></v-spacer>

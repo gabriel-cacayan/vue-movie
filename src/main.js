@@ -7,7 +7,8 @@ import TheMovie from "./components/pages/TheMovie.vue";
 import HomePage from "./components/pages/HomePage.vue";
 import ThePerson from "./components/pages/ThePerson.vue";
 import NotFound from "./components/NotFound.vue";
-import SearchMovie from "./components/pages/SearchMovie.vue";
+import SearchResult from "./components/pages/SearchResult.vue";
+import FindMovie from "./components/pages/FindMovie.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -34,10 +35,14 @@ const router = createRouter({
       props: true,
     },
     {
-      path: "/search/:search",
+      path: "/find-a-movie/",
+      name: "find",
+      component: FindMovie,
+    },
+    {
+      path: "/search/",
       name: "search",
-      component: SearchMovie,
-      props: true,
+      component: SearchResult,
     },
     {
       path: "/:pathMatch(.*)*",

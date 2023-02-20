@@ -13,6 +13,7 @@
 import { useDisplay } from "vuetify";
 import TheHeader from "@/components/UI/TheHeader.vue";
 import TheFooter from "./components/UI/TheFooter.vue";
+import cardImagePlaceholder from "./assets/default_img.png";
 
 export default {
   name: "App",
@@ -25,8 +26,7 @@ export default {
       apiKey: "fd920f7d47c80b3bf8615aec1773db04",
       movieImagePlaceholder:
         "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fthecai.ie%2Fwp-content%2Fthemes%2Fsalient-child%2Fimages%2Fplaceholder.png&f=1&nofb=1&ipt=1c3d09d014c6f2e5c74c445b1453ac228e28d7aaf261f0cb37973a705ad12045&ipo=images",
-      cardImagePlaceholder:
-        "https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fbooks.tsl.org.au%2Fwp-content%2Fuploads%2Fsites%2F3%2F2015%2F01%2FNO-Image-placeholder.png&f=1&nofb=1&ipt=d5d828af708f14e0ab212c0013560c8f72e96f4cda9c6e831c1aca421bc9530e&ipo=images",
+      cardImagePlaceholder: cardImagePlaceholder,
     };
   },
   computed: {

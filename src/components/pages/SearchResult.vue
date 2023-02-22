@@ -1,85 +1,83 @@
 <template>
-  <v-main>
-    <v-container fluid>
-      <!-- Search Result For Movie -->
-      <div v-if="searchMovies.length != 0" class="pa-4">
-        <h1 class="text-h5 my-4">Your search for - {{ search }}</h1>
-        <v-row>
-          <v-col
-            v-for="movie in searchMovies"
-            :key="movie.id"
-            :cols="transferToCol"
+  <v-container fluid>
+    <!-- Search Result For Movie -->
+    <div v-if="searchMovies.length != 0" class="pa-4">
+      <h1 class="text-h5 my-4">Your search for - {{ search }}</h1>
+      <v-row>
+        <v-col
+          v-for="movie in searchMovies"
+          :key="movie.id"
+          :cols="transferToCol"
+        >
+          <v-card
+            class="mx-auto"
+            hover
+            v-ripple
+            max-width="344"
+            @click="getSpecificMovie(movie.id)"
           >
-            <v-card
-              class="mx-auto"
-              hover
-              v-ripple
-              max-width="344"
-              @click="getSpecificMovie(movie.id)"
-            >
-              <v-img
-                :src="renderPoster(movie.poster_path)"
-                :lazy-src="cardImagePlaceholder"
-                :alt="movie.poster"
-                height="344"
-                cover
-              ></v-img>
+            <v-img
+              :src="renderPoster(movie.poster_path)"
+              :lazy-src="cardImagePlaceholder"
+              :alt="movie.poster"
+              height="250"
+              cover
+            ></v-img>
 
-              <v-card-title>{{ movie.original_title }}</v-card-title>
+            <v-card-title>{{ movie.original_title }}</v-card-title>
 
-              <v-card-subtitle class="d-flex mb-4">
-                <div>
-                  <v-icon icon="mdi-star" color="#FFFF00"></v-icon>
-                  {{ Math.round(movie.vote_average) }}
-                </div>
-                <v-spacer></v-spacer>
-                <p>
-                  {{
-                    movie.release_date
-                      ? parseInt(movie.release_date)
-                      : "No data available."
-                  }}
-                </p>
-              </v-card-subtitle>
-            </v-card>
-          </v-col>
-        </v-row>
-      </div>
+            <v-card-subtitle class="d-flex mb-4">
+              <div>
+                <v-icon icon="mdi-star" color="#FFFF00"></v-icon>
+                {{ Math.round(movie.vote_average) }}
+              </div>
+              <v-spacer></v-spacer>
+              <p>
+                {{
+                  movie.release_date
+                    ? parseInt(movie.release_date)
+                    : "No data available."
+                }}
+              </p>
+            </v-card-subtitle>
+          </v-card>
+        </v-col>
+      </v-row>
+    </div>
 
-      <!-- Search Result For People  -->
-      <div v-if="searchPersons.length != 0" class="pa-4">
-        <h1 class="text-h5 my-4">Your search for - {{ search }}</h1>
-        <v-row>
-          <v-col
-            v-for="person in searchPersons"
-            :key="person.id"
-            :cols="transferToCol"
-          >
-            <v-card class="mx-auto" hover v-ripple max-width="344">
-              <v-img
-                :src="renderPoster(person.profile_path)"
-                :lazy-src="cardImagePlaceholder"
-                :alt="person.name"
-                height="344"
-                cover
-                @click="getPerson(person.id)"
-              ></v-img>
+    <!-- Search Result For People  -->
+    <div v-if="searchPersons.length != 0" class="pa-4">
+      <h1 class="text-h5 my-4">Your search for - {{ search }}</h1>
+      <v-row>
+        <v-col
+          v-for="person in searchPersons"
+          :key="person.id"
+          :cols="transferToCol"
+        >
+          <v-card class="mx-auto" hover v-ripple max-width="344">
+            <v-img
+              :src="renderPoster(person.profile_path)"
+              :lazy-src="cardImagePlaceholder"
+              :alt="person.name"
+              height="250"
+              cover
+              @click="getPerson(person.id)"
+            ></v-img>
 
-              <v-card-title>{{ person.original_name }}</v-card-title>
+            <v-card-title>{{ person.original_name }}</v-card-title>
 
-              <v-card-subtitle class="d-flex mb-4">
-                <div>
-                  <v-icon icon="mdi-star" color="#FFFF00"></v-icon>
-                  {{ Math.round(person.popularity) }}
-                </div>
-                <v-spacer></v-spacer>
-              </v-card-subtitle>
-            </v-card>
-          </v-col>
-        </v-row>
-      </div>
-    </v-container>
-  </v-main>
+            <v-card-subtitle class="d-flex mb-4">
+              <div>
+                <v-icon icon="mdi-star" color="#FFFF00"></v-icon>
+                {{ Math.round(person.popularity) }}
+              </div>
+              <v-spacer></v-spacer>
+            </v-card-subtitle>
+          </v-card>
+        </v-col>
+      </v-row>
+    </div>
+  </v-container>
 </template>
 
 <script>

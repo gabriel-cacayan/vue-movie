@@ -3,12 +3,13 @@ import App from "./App.vue";
 import vuetify from "./plugins/vuetify";
 import { loadFonts } from "./plugins/webfontloader";
 import { createRouter, createWebHistory } from "vue-router";
-import TheMovie from "./components/pages/TheMovie.vue";
+import MovieDetails from "./components/pages/MovieDetails.vue";
 import HomePage from "./components/pages/HomePage.vue";
-import ThePerson from "./components/pages/ThePerson.vue";
+import PersonDetails from "./components/pages/PersonDetails.vue";
 import NotFound from "./components/NotFound.vue";
 import SearchResult from "./components/pages/SearchResult.vue";
 import FindMovie from "./components/pages/FindMovie.vue";
+import TvDetails from "./components/pages/TvDetails.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -25,13 +26,13 @@ const router = createRouter({
     {
       path: "/movie/:id(\\d+)",
       name: "movies.show",
-      component: TheMovie,
+      component: MovieDetails,
       props: true,
     },
     {
       path: "/person/:id(\\d+)",
       name: "persons.show",
-      component: ThePerson,
+      component: PersonDetails,
       props: true,
     },
     {
@@ -43,6 +44,12 @@ const router = createRouter({
       path: "/search/",
       name: "search",
       component: SearchResult,
+    },
+    {
+      path: "/tv/:id(\\d+)",
+      name: "tv",
+      component: TvDetails,
+      props: true,
     },
     {
       path: "/:pathMatch(.*)*",

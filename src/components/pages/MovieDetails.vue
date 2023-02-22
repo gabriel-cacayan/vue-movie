@@ -1,13 +1,27 @@
 <template>
-  <v-main>
-    <v-container class="bg-black-4 h-100 pa-0">
-      <div v-if="movieInfo" class="d-flex flex-column flex-md-row align-center">
-        <div>
+  <section>
+    <div
+      v-if="movieInfo"
+      id="main"
+      :style="{
+        backgroundImage: `url('${renderPoster(movieInfo.backdrop_path)}')`,
+      }"
+      class="d-none d-md-flex"
+    >
+      <div id="overlay"></div>
+      <div
+        class="d-flex flex-column flex-md-row align-center px-4"
+        id="overlay-main"
+      >
+        <div class="px-4">
           <v-img
-            v-if="movieInfo.backdrop_path"
+            v-if="movieInfo.poster_path"
+            class="rounded-lg"
             height="500"
-            width="500"
-            :src="renderPoster(movieInfo.backdrop_path)"
+            width="300"
+            aspect-ratio="16/9"
+            eager
+            :src="renderPoster(movieInfo.poster_path)"
             cover
           ></v-img>
           <v-img
@@ -19,8 +33,8 @@
         </div>
         <div class="pa-4">
           <h1>{{ movieInfo.original_title }}</h1>
-          <p class="text-grey-darken-1 mb-4">{{ movieInfo.tagline }}</p>
-          <p class="text-grey-lighten-1 mb-4">{{ movieInfo.overview }}</p>
+          <p class="text-grey-lighten-1 mb-4">{{ movieInfo.tagline }}</p>
+          <p class="text-grey-lighten-3 mb-4 pr-2">{{ movieInfo.overview }}</p>
           <p class="mb-4">
             Genres:
             <template v-for="genre in movieInfo.genres" :key="genre.id">
@@ -43,9 +57,57 @@
           </p>
         </div>
       </div>
+    </div>
 
-      <!-- Tabs -->
+    <!-- Open in mobile -->
+    <div
+      v-if="movieInfo"
+      class="d-flex d-md-none flex-column flex-md-row align-center overflow-hidden"
+    >
+      <div>
+        <v-img
+          v-if="movieInfo.backdrop_path"
+          :src="renderPoster(movieInfo.backdrop_path)"
+          cover
+          height="500"
+          width="500"
+        ></v-img>
+        <v-img
+          v-else
+          height="300"
+          width="300"
+          :src="cardImagePlaceholder"
+        ></v-img>
+      </div>
+      <div class="pa-4">
+        <h1>{{ movieInfo.original_title }}</h1>
+        <p class="text-grey-darken-1 mb-4">{{ movieInfo.tagline }}</p>
+        <p class="text-grey-lighten-1 mb-4">{{ movieInfo.overview }}</p>
+        <p class="mb-4">
+          Genres:
+          <template v-for="genre in movieInfo.genres" :key="genre.id">
+            <v-chip class="mr-2">
+              {{ genre.name }}
+            </v-chip>
+          </template>
+        </p>
+        <p class="mb-4">
+          Budget:
+          {{ budget }}
+        </p>
+        <p class="mb-4">
+          Revenue:
+          {{ revenue }}
+        </p>
+        <p class="mb-4">
+          Runtime:
+          {{ runtime }}
+        </p>
+      </div>
+    </div>
 
+    <!-- Tabs -->
+    <v-container class="bg-black-4 mb-4 pa-0">
       <v-card>
         <v-tabs v-model="tab" color="red-accent-4" align-tabs="title">
           <v-tab v-for="item in items" :key="item" :value="item">{{
@@ -54,7 +116,7 @@
         </v-tabs>
         <v-window v-model="tab">
           <v-window-item v-if="casts" value="Casts">
-            <div
+            <!-- <div
               class="d-flex flex-row pa-4 align-center"
               v-for="cast in casts"
               :key="cast.id"
@@ -69,7 +131,26 @@
                 <p>{{ cast.character }}</p>
                 <p class="text-grey">{{ cast.original_name }}</p>
               </div>
-            </div>
+            </div> -->
+            <v-row>
+              <v-col
+                v-for="cast in casts"
+                :key="cast.id"
+                id="avatars"
+                class="d-flex flex-row align-center mt-4"
+                @click="getPerson(cast.id)"
+                md="4"
+              >
+                <v-avatar
+                  :image="renderPoster(cast.profile_path)"
+                  size="100"
+                ></v-avatar>
+                <div class="ml-4">
+                  <p>{{ cast.character }}</p>
+                  <p class="text-grey">{{ cast.original_name }}</p>
+                </div>
+              </v-col>
+            </v-row>
           </v-window-item>
 
           <v-window-item v-if="movies" value="Recommendations">
@@ -84,15 +165,16 @@
                   hover
                   v-ripple
                   max-width="344"
-                  :loading="isLoading && movie.id == cardId"
+                  :loading="isLoading"
                   @click="getSpecificMovie(movie.id)"
                 >
                   <v-img
                     :lazy-src="cardImagePlaceholder"
                     :src="renderPoster(movie.poster_path)"
                     :alt="movie.poster"
-                    height="344"
+                    height="250"
                     cover
+                    eager
                   ></v-img>
 
                   <v-card-title>{{ movie.original_title }}</v-card-title>
@@ -114,7 +196,8 @@
         </v-window>
       </v-card>
     </v-container>
-  </v-main>
+    <br />
+  </section>
 </template>
 
 <script>
@@ -248,6 +331,39 @@ export default {
 </script>
 
 <style scoped>
+#main {
+  /* background: url("https://www.pixelstalk.net/wp-content/uploads/2015/12/Avengers-marvel-comics-wallpaper-background.jpg"); */
+  background-repeat: no-repeat;
+  background-size: cover;
+  /* background: url("https://www.pixelstalk.net/wp-content/uploads/2015/12/Avengers-marvel-comics-wallpaper-background.jpg")
+    center no-repeat; */
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+}
+
+#overlay {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  background: #000;
+  opacity: 0.6;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+}
+
+#overlay-main {
+  position: absolute;
+  top: 50%;
+  bottom: 50%;
+  left: 5%;
+  right: 5%;
+  z-index: 3;
+}
+
 #avatars {
   cursor: pointer;
 }

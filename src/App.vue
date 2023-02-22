@@ -3,7 +3,9 @@
   <v-app theme="dark">
     <the-header :breakpoints="getBreakPoints"></the-header>
 
-    <router-view></router-view>
+    <v-main>
+      <router-view></router-view>
+    </v-main>
 
     <the-footer></the-footer>
   </v-app>

@@ -1,5 +1,5 @@
 <template>
-  <v-main class="bg-black">
+  <section class="bg-black">
     <div class="pa-4">
       <p class="text-grey-lighten-1 mt-4">
         Vue Movie is an online database of information related to films,
@@ -26,7 +26,7 @@
             >
               <v-img
                 :src="renderPoster(movie.poster_path)"
-                :lazy-src="defaultImg"
+                :lazy-src="cardImagePlaceholder"
                 :alt="movie.poster"
                 height="250"
                 cover
@@ -66,7 +66,7 @@
             >
               <v-img
                 :src="renderPoster(movie.poster_path)"
-                :lazy-src="defaultImg"
+                :lazy-src="cardImagePlaceholder"
                 :alt="movie.poster"
                 height="250"
                 cover
@@ -106,7 +106,7 @@
             >
               <v-img
                 :src="renderPoster(movie.poster_path)"
-                :lazy-src="defaultImg"
+                :lazy-src="cardImagePlaceholder"
                 :alt="movie.poster"
                 height="250"
                 cover
@@ -129,8 +129,48 @@
         </v-slide-group>
       </v-sheet>
     </div>
-    <!-- test -->
-  </v-main>
+
+    <!-- Popular TV Shows -->
+    <div v-if="popularTvShows">
+      <h1 class="text-h5 ma-4">Popular TV Shows</h1>
+      <v-sheet class="my-10 mx-auto">
+        <v-slide-group v-model="model" class="pa-4 bg-black" show-arrows>
+          <v-slide-group-item v-for="tv in popularTvShows" :key="tv.id">
+            <v-card
+              class="mx-4 fill-height"
+              hover
+              v-ripple
+              height="350"
+              width="175"
+              @click="routeToTvDetails(tv.id)"
+            >
+              <v-img
+                :src="renderPoster(tv.poster_path)"
+                :lazy-src="cardImagePlaceholder"
+                :alt="tv.poster"
+                height="250"
+                cover
+              ></v-img>
+
+              <v-card-title>{{ tv.original_title }}</v-card-title>
+
+              <v-card-subtitle class="d-flex mb-4">
+                <div>
+                  <v-icon icon="mdi-star" color="#FFFF00"></v-icon>
+                  {{ Math.round(tv.vote_average) }}
+                </div>
+                <v-spacer></v-spacer>
+                <p>
+                  {{ parseInt(tv.first_air_date) }}
+                </p>
+              </v-card-subtitle>
+            </v-card>
+          </v-slide-group-item>
+        </v-slide-group>
+      </v-sheet>
+    </div>
+    <br />
+  </section>
 </template>
 
 <script>
@@ -153,6 +193,7 @@ export default {
       topRatedMovies: [],
       upcomingMovies: [],
       model: 0,
+      popularTvShows: [],
     };
   },
   methods: {
@@ -220,13 +261,54 @@ export default {
           this.isLoading = false;
         });
     },
+    /**
+     *
+     * * This is a release type query that looks for all movies that have a release type of 2 or 3 within the specified date range.
+     *
+     */
+    getPopularTvShows: function () {
+      this.isLoading = true;
+      fetch(
+        `https://api.themoviedb.org/3/tv/popular?api_key=${this.apiKey}&language=en-US&page=1`
+      )
+        .then((response) => response.json())
+        .then((result) => {
+          // console.log(result);
+          result.results.forEach((element) => {
+            this.popularTvShows.push(element);
+          });
+          this.isLoading = false;
+        })
+        .catch((error) => {
+          this.isLoading = false;
+        });
+    },
+    /**
+     *
+     * * Route to details of tv.
+     * @param id int - tv id
+     *
+     */
+    routeToTvDetails: function (id) {
+      this.$router.push({
+        name: "tv",
+        params: { id: id },
+      });
+    },
   },
   mounted: function () {
     this.getPopularMovies();
     this.getTopRatedMovies();
     this.getUpcomingMovies();
+    this.getPopularTvShows();
   },
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+#test {
+  box-shadow: -41px -1px 30px -6px rgba(0, 0, 0, 0.63) inset;
+  -webkit-box-shadow: -41px -1px 30px -6px rgba(0, 0, 0, 0.63) inset;
+  -moz-box-shadow: -41px -1px 30px -6px rgba(0, 0, 0, 0.63) inset;
+}
+</style>

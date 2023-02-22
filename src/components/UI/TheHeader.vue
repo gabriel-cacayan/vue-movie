@@ -5,11 +5,13 @@
         prepend-icon="mdi-home"
         title="Home"
         :to="{ name: 'home' }"
+        @click="closeDrawer"
       ></v-list-item>
       <v-list-item
         prepend-icon="mdi-magnify"
         title="Search"
         :to="{ name: 'find' }"
+        @click="closeDrawer"
       ></v-list-item>
     </v-list>
   </v-navigation-drawer>
@@ -51,6 +53,11 @@ export default {
     return {
       drawer: false,
     };
+  },
+  methods: {
+    closeDrawer: function () {
+      this.drawer = false;
+    },
   },
 };
 </script>

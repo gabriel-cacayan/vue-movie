@@ -1,6 +1,7 @@
 <template>
-  <v-main
+  <section
     class="h-100 bg-grey-lighten-5 d-flex flex-column align-center justify-center"
+    id="section-find-movie"
   >
     <v-container>
       <div class="d-flex flex-row">
@@ -21,13 +22,14 @@
         ></v-text-field>
       </div>
     </v-container>
-  </v-main>
+  </section>
 </template>
 
 <script>
 export default {
   data() {
     return {
+      search: "",
       filter: "Movie",
     };
   },
@@ -47,4 +49,8 @@ export default {
 };
 </script>
 
-<style></style>
+<style scoped>
+#section-find-movie {
+  min-height: 100vh;
+}
+</style>

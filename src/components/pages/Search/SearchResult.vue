@@ -77,6 +77,40 @@
         </v-col>
       </v-row>
     </div>
+
+    <!-- Search Result For Tvs  -->
+    <div v-if="searchTvs.length != 0" class="pa-4">
+      <h1 class="text-h5 my-4">Your search for - {{ search }}</h1>
+      <v-row>
+        <v-col v-for="tv in searchTvs" :key="tv.id" :cols="transferToCol">
+          <v-card class="mx-auto" hover v-ripple max-width="344">
+            <v-img
+              :src="renderPoster(tv.poster_path)"
+              :lazy-src="cardImagePlaceholder"
+              :alt="tv.name"
+              height="250"
+              cover
+              @click="getTvDetails(tv.id)"
+            ></v-img>
+
+            <v-card-title>{{ tv.original_name }}</v-card-title>
+
+            <v-card-subtitle class="d-flex mb-4">
+              <div>
+                <v-icon icon="mdi-star" color="#FFFF00"></v-icon>
+                {{ Math.round(tv.vote_average) }}
+              </div>
+              <v-spacer></v-spacer>
+              <p>
+                {{
+                  tv.first_air_date ? parseInt(tv.first_air_date) : "Unknown"
+                }}
+              </p>
+            </v-card-subtitle>
+          </v-card>
+        </v-col>
+      </v-row>
+    </div>
   </v-container>
 </template>
 
@@ -93,6 +127,7 @@ export default {
     return {
       searchMovies: [],
       searchPersons: [],
+      searchTvs: [],
       search: this.$route.query.search,
       criteria: this.$route.query.criteria,
     };
@@ -114,6 +149,25 @@ https://api.themoviedb.org/3/search/movie?api_key=${this.apiKey}&language=en-US&
           .then((result) => {
             result.results.forEach((element) => {
               this.searchMovies.push(element);
+            });
+
+            this.isLoading = false;
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            this.isLoading = false;
+          });
+      } else if (criteria == "Tv") {
+        fetch(
+          `
+https://api.themoviedb.org/3/search/tv?api_key=${this.apiKey}&language=en-US&query=${search}&page=1&include_adult=false
+`
+        )
+          .then((response) => response.json())
+          .then((result) => {
+            // console.log(result);
+            result.results.forEach((element) => {
+              this.searchTvs.push(element);
             });
 
             this.isLoading = false;
@@ -150,6 +204,14 @@ https://api.themoviedb.org/3/search/person?api_key=${this.apiKey}&language=en-US
      */
     getPerson: function (id) {
       this.$router.push({ name: "persons.show", params: { id: id } });
+    },
+    /**
+     *
+     * * Get the primary TV show details by id.
+     * @param id int - tv id
+     */
+    getTvDetails: function (id) {
+      this.$router.push({ name: "tv", params: { id: id } });
     },
   },
   mounted() {

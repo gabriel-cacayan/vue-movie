@@ -3,13 +3,13 @@ import App from "./App.vue";
 import vuetify from "./plugins/vuetify";
 import { loadFonts } from "./plugins/webfontloader";
 import { createRouter, createWebHistory } from "vue-router";
-import MovieDetails from "./components/pages/MovieDetails.vue";
+import MovieDetails from "./components/pages/Movies/MovieDetails.vue";
 import HomePage from "./components/pages/HomePage.vue";
 import PersonDetails from "./components/pages/PersonDetails.vue";
 import NotFound from "./components/NotFound.vue";
-import SearchResult from "./components/pages/SearchResult.vue";
-import FindMovie from "./components/pages/FindMovie.vue";
-import TvDetails from "./components/pages/TvDetails.vue";
+import SearchResult from "./components/pages/Search/SearchResult.vue";
+import FindMovie from "./components/pages/Search/FindMovie.vue";
+import TvDetails from "./components/pages/TV/TvDetails.vue";
 
 const router = createRouter({
   history: createWebHistory(),

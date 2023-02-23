@@ -7,7 +7,7 @@
       <div class="d-flex flex-row">
         <v-select
           label="Filter"
-          :items="['Movie', 'People']"
+          :items="['Movie', 'People', 'Tv']"
           variant="underlined"
           class="w-25"
           v-model="filter"

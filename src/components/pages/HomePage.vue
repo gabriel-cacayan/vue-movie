@@ -1,5 +1,72 @@
 <template>
   <section class="bg-black">
+    <div
+      v-if="landingInfo"
+      id="main"
+      :style="{
+        backgroundImage: `url('${renderPoster(landingInfo.backdrop_path)}')`,
+      }"
+      class="d-none d-md-flex"
+    >
+      <div id="overlay"></div>
+      <div
+        class="d-flex flex-column flex-md-row align-center px-4"
+        id="overlay-main"
+      >
+        <div class="px-4">
+          <v-img
+            v-if="landingInfo.poster_path"
+            class="rounded-lg"
+            height="500"
+            width="300"
+            aspect-ratio="16/9"
+            eager
+            :src="renderPoster(landingInfo.poster_path)"
+            cover
+          ></v-img>
+          <v-img
+            v-else
+            height="300"
+            width="300"
+            :src="cardImagePlaceholder"
+          ></v-img>
+        </div>
+        <div class="pa-4">
+          <h1>{{ landingInfo.original_title }}</h1>
+          <p class="text-grey-lighten-1 mb-4">{{ landingInfo.tagline }}</p>
+          <p class="text-grey-lighten-3 mb-4 pr-2">
+            {{ landingInfo.overview }}
+          </p>
+          <p class="mb-4">
+            Genres:
+            <template v-for="genre in landingInfo.genres" :key="genre.id">
+              <v-chip class="mr-2">
+                {{ genre.name }}
+              </v-chip>
+            </template>
+          </p>
+          <p class="mb-4">
+            Budget:
+            {{ budget }}
+          </p>
+          <p class="mb-4">
+            Revenue:
+            {{ revenue }}
+          </p>
+          <p class="mb-4">
+            Runtime:
+            {{ runtime }}
+          </p>
+          <v-btn
+            color="info"
+            variant="outlined"
+            :to="{ name: 'movies.show', params: { id: landingInfo.id } }"
+            >View Details</v-btn
+          >
+        </div>
+      </div>
+    </div>
+
     <div class="pa-4">
       <p class="text-grey-lighten-1 mt-4">
         Vue Movie is an online database of information related to films,
@@ -194,7 +261,27 @@ export default {
       upcomingMovies: [],
       model: 0,
       popularTvShows: [],
+      landingInfo: null,
     };
+  },
+  computed: {
+    budget() {
+      return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+      }).format(this.landingInfo.budget);
+    },
+    revenue() {
+      return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+      }).format(this.landingInfo.revenue);
+    },
+    runtime() {
+      var hours = Math.floor(this.landingInfo.runtime / 60);
+      var minutes = this.landingInfo.runtime % 60;
+      return hours + "h " + minutes + "m";
+    },
   },
   methods: {
     /**
@@ -295,8 +382,22 @@ export default {
         params: { id: id },
       });
     },
+    /**
+     * Get Avatar to make it landing page
+     */
+    getAvatar: function () {
+      fetch(
+        `https://api.themoviedb.org/3/movie/76600?api_key=${this.apiKey}&language=en-US`
+      )
+        .then((response) => response.json())
+        .then((result) => {
+          this.landingInfo = result;
+        })
+        .catch((error) => {});
+    },
   },
   mounted: function () {
+    this.getAvatar();
     this.getPopularMovies();
     this.getTopRatedMovies();
     this.getUpcomingMovies();
@@ -306,9 +407,33 @@ export default {
 </script>
 
 <style scoped>
-#test {
-  box-shadow: -41px -1px 30px -6px rgba(0, 0, 0, 0.63) inset;
-  -webkit-box-shadow: -41px -1px 30px -6px rgba(0, 0, 0, 0.63) inset;
-  -moz-box-shadow: -41px -1px 30px -6px rgba(0, 0, 0, 0.63) inset;
+#main {
+  background-repeat: no-repeat;
+  background-size: cover;
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+}
+
+#overlay {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  background: #000;
+  opacity: 0.6;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+}
+
+#overlay-main {
+  position: absolute;
+  top: 50%;
+  bottom: 50%;
+  left: 5%;
+  right: 5%;
+  z-index: 3;
 }
 </style>

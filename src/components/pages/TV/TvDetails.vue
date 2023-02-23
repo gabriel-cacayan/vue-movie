@@ -127,7 +127,7 @@
           ></v-img>
         </v-col>
         <v-col cols="9" md="10">
-          <div class="ml-4">
+          <div class="ml-4 pa-4">
             <h1>{{ season.name }}</h1>
             <p class="font-weight-bold">
               {{ season.air_date ? parseInt(season.air_date) : "Unknown" }} |

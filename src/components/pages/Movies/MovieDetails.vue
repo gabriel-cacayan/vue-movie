@@ -107,7 +107,8 @@
     </div>
 
     <!-- Tabs -->
-    <v-container class="bg-black-4 mb-4 pa-0">
+    <v-container class="bg-black-4 my-10 pa-0">
+      <h1 class="text-h5 ma-4">More Details</h1>
       <v-card>
         <v-tabs v-model="tab" color="red-accent-4" align-tabs="title">
           <v-tab v-for="item in items" :key="item" :value="item">{{
@@ -115,23 +116,8 @@
           }}</v-tab>
         </v-tabs>
         <v-window v-model="tab">
+          <!-- Casts -->
           <v-window-item v-if="casts" value="Casts">
-            <!-- <div
-              class="d-flex flex-row pa-4 align-center"
-              v-for="cast in casts"
-              :key="cast.id"
-              @click="getPerson(cast.id)"
-              id="avatars"
-            >
-              <v-avatar
-                :image="renderPoster(cast.profile_path)"
-                size="100"
-              ></v-avatar>
-              <div class="ml-4">
-                <p>{{ cast.character }}</p>
-                <p class="text-grey">{{ cast.original_name }}</p>
-              </div>
-            </div> -->
             <v-row>
               <v-col
                 v-for="cast in casts"
@@ -139,6 +125,7 @@
                 id="avatars"
                 class="d-flex flex-row align-center mt-4"
                 @click="getPerson(cast.id)"
+                cols="12"
                 md="4"
               >
                 <v-avatar
@@ -153,6 +140,7 @@
             </v-row>
           </v-window-item>
 
+          <!-- Recommendations -->
           <v-window-item v-if="movies" value="Recommendations">
             <v-row>
               <v-col
@@ -182,7 +170,7 @@
                   <v-card-subtitle class="d-flex mb-4">
                     <div>
                       <v-icon icon="mdi-star" color="#FFFF00"></v-icon>
-                      {{ movie.vote_average }}
+                      {{ Math.round(movie.vote_average) }}
                     </div>
                     <v-spacer></v-spacer>
                     <p>
@@ -192,6 +180,71 @@
                 </v-card>
               </v-col>
             </v-row>
+          </v-window-item>
+
+          <!-- Production Companies -->
+          <v-window-item v-if="movieInfo" value="Production Companies">
+            <v-row>
+              <v-col
+                v-for="production in movieInfo.production_companies"
+                :key="production.id"
+                sm="12"
+                md="4"
+              >
+                <v-card class="mx-auto" hover v-ripple max-width="344" border>
+                  <v-img
+                    :lazy-src="cardImagePlaceholder"
+                    :src="renderPoster(production.logo_path)"
+                    height="250"
+                    cover
+                    eager
+                  ></v-img>
+
+                  <v-card-title>{{ production.name }}</v-card-title>
+
+                  <v-card-subtitle class="d-flex mb-4">
+                    {{ production.origin_country }}</v-card-subtitle
+                  >
+                </v-card>
+              </v-col>
+            </v-row>
+          </v-window-item>
+
+          <!-- Other Details -->
+          <v-window-item v-if="movieInfo" value="Other Details" class="pa-4">
+            <div class="my-4">
+              <h3>Production Countries</h3>
+              <v-chip-group mandatory selected-class="text-primary">
+                <v-chip
+                  v-for="production in movieInfo.production_countries"
+                  :key="production.iso_3166_1"
+                >
+                  {{ production.name }}
+                </v-chip>
+              </v-chip-group>
+            </div>
+
+            <div class="my-4">
+              <h3>Status</h3>
+              <v-chip class="mt-2">{{ movieInfo.status }}</v-chip>
+            </div>
+
+            <div class="my-4">
+              <h3>Release Date</h3>
+              <v-chip class="mt-2">{{ movieInfo.release_date }}</v-chip>
+            </div>
+
+            <div class="my-4">
+              <h3>Vote Average</h3>
+              <v-chip class="mt-2">{{
+                Math.round(movieInfo.vote_average)
+              }}</v-chip>
+            </div>
+
+            <div class="my-4">
+              <h3>Vote Count</h3>
+              <v-chip class="mt-2">{{ movieInfo.vote_count }}</v-chip>
+            </div>
           </v-window-item>
         </v-window>
       </v-card>
@@ -214,7 +267,12 @@ export default {
     return {
       movieInfo: null,
       tab: "Casts",
-      items: ["Casts", "Recommendations"],
+      items: [
+        "Casts",
+        "Recommendations",
+        "Production Companies",
+        "Other Details",
+      ],
       casts: null,
       movies: null,
     };

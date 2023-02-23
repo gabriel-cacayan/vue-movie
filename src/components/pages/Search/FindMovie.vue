@@ -35,9 +35,7 @@ export default {
   },
   methods: {
     /**
-     * * Search a movie from api.
-     *
-     *
+     * Search a movie from api.
      */
     searchMovie: function () {
       this.$router.push({

@@ -15,7 +15,8 @@
 import { useDisplay } from "vuetify";
 import TheHeader from "@/components/UI/TheHeader.vue";
 import TheFooter from "./components/UI/TheFooter.vue";
-import cardImagePlaceholder from "./assets/default_img.png";
+import defaultCardImage from "./assets/default-card.png";
+import defaultProfilePicture from "./assets/default-profile.png";
 
 export default {
   name: "App",
@@ -26,9 +27,8 @@ export default {
   data() {
     return {
       apiKey: "fd920f7d47c80b3bf8615aec1773db04",
-      movieImagePlaceholder:
-        "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fthecai.ie%2Fwp-content%2Fthemes%2Fsalient-child%2Fimages%2Fplaceholder.png&f=1&nofb=1&ipt=1c3d09d014c6f2e5c74c445b1453ac228e28d7aaf261f0cb37973a705ad12045&ipo=images",
-      cardImagePlaceholder: cardImagePlaceholder,
+      defaultCardImage: defaultCardImage,
+      defaultProfilePicture: defaultProfilePicture,
     };
   },
   computed: {
@@ -47,16 +47,13 @@ export default {
   },
   methods: {
     /**
-     *
-     * * Render image from api.
-     *
+     * Render image from api.
      */
     renderPoster: function (image) {
       return "https://image.tmdb.org/t/p/original" + image;
     },
     /**
-     *
-     * * Get the primary information about a movie.
+     * Get the primary information about a movie.
      * @param id int - movie id
      */
     getSpecificMovie: function (id) {
@@ -85,10 +82,9 @@ export default {
       movieImagePlaceholder: this.movieImagePlaceholder,
       cardImagePlaceholder: this.cardImagePlaceholder,
       getSpecificMovie: this.getSpecificMovie,
+      defaultCardImage: this.defaultCardImage,
+      defaultProfilePicture: this.defaultProfilePicture,
     };
-  },
-  mounted() {
-    // console.log(this.$route.path);
   },
 };
 </script>

@@ -65,12 +65,4 @@ const router = createRouter({
 
 loadFonts();
 
-// const app = createApp(App);
-// // Make sure to _use_ the router instance to make the
-// // whole app router-aware.
-// app.use(router);
-// app.use(vuetify);
-
-// app.mount("#app");
-
 createApp(App).use(router).use(vuetify).mount("#app");

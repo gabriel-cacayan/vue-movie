@@ -28,7 +28,7 @@
             v-else
             height="300"
             width="300"
-            :src="cardImagePlaceholder"
+            :src="defaultCardImage"
           ></v-img>
         </div>
         <div class="pa-4">
@@ -70,10 +70,7 @@
     <div class="pa-4">
       <p class="text-grey-lighten-1 mt-4">
         Vue Movie is an online database of information related to films,
-        television series, music videos, podcasts, home videos, video games, and
-        streaming content online including cast, production crew and personal
-        biographies, plot summaries, trivia, ratings, and fan and critical
-        reviews.
+        television series, ratings, and reviews.
       </p>
     </div>
 
@@ -93,7 +90,7 @@
             >
               <v-img
                 :src="renderPoster(movie.poster_path)"
-                :lazy-src="cardImagePlaceholder"
+                :lazy-src="defaultCardImage"
                 :alt="movie.poster"
                 height="250"
                 cover
@@ -133,7 +130,7 @@
             >
               <v-img
                 :src="renderPoster(movie.poster_path)"
-                :lazy-src="cardImagePlaceholder"
+                :lazy-src="defaultCardImage"
                 :alt="movie.poster"
                 height="250"
                 cover
@@ -173,7 +170,7 @@
             >
               <v-img
                 :src="renderPoster(movie.poster_path)"
-                :lazy-src="cardImagePlaceholder"
+                :lazy-src="defaultCardImage"
                 :alt="movie.poster"
                 height="250"
                 cover
@@ -213,7 +210,7 @@
             >
               <v-img
                 :src="renderPoster(tv.poster_path)"
-                :lazy-src="cardImagePlaceholder"
+                :lazy-src="defaultCardImage"
                 :alt="tv.poster"
                 height="250"
                 cover
@@ -246,17 +243,12 @@ export default {
     "transferToCol",
     "apiKey",
     "renderPoster",
-    "cardImagePlaceholder",
     "getSpecificMovie",
+    "defaultCardImage",
   ],
   data() {
     return {
-      isLoading: false,
       popularMovies: [],
-      cardId: null,
-      search: "",
-      parallaxImage:
-        "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2F7f%2F10%2F14%2F7f10142cd34718e80d9e257271b452ef.jpg&f=1&nofb=1&ipt=db997dfaff0c5a45a2aad4e6a5b4f9af48ffef0ff72cc308aedaa465430a9d7c&ipo=images",
       topRatedMovies: [],
       upcomingMovies: [],
       model: 0,
@@ -285,12 +277,9 @@ export default {
   },
   methods: {
     /**
-     *
-     * * Get a list of the current popular movies on TMDB. This list updates daily.
-     *
+     * Get a list of the current popular movies on TMDB. This list updates daily.
      */
     getPopularMovies: function () {
-      this.isLoading = true;
       fetch(
         `https://api.themoviedb.org/3/movie/popular?api_key=${this.apiKey}&language=en-US&page=1`
       )
@@ -299,19 +288,13 @@ export default {
           result.results.forEach((element) => {
             this.popularMovies.push(element);
           });
-          this.isLoading = false;
         })
-        .catch((error) => {
-          this.isLoading = false;
-        });
+        .catch((error) => {});
     },
     /**
-     *
-     * * Get the top rated movies on TMDB.
-     *
+     * Get the top rated movies on TMDB.
      */
     getTopRatedMovies: function () {
-      this.isLoading = true;
       fetch(
         `https://api.themoviedb.org/3/movie/top_rated?api_key=${this.apiKey}&language=en-US&page=1`
       )
@@ -320,20 +303,14 @@ export default {
           result.results.forEach((element) => {
             this.topRatedMovies.push(element);
           });
-          this.isLoading = false;
         })
-        .catch((error) => {
-          this.isLoading = false;
-        });
+        .catch((error) => {});
     },
     /**
-     *
-     * * Get a list of upcoming movies in theatres.
-     * * This is a release type query that looks for all movies that have a release type of 2 or 3 within the specified date range.
-     *
+     * Get a list of upcoming movies in theatres.
+     * This is a release type query that looks for all movies that have a release type of 2 or 3 within the specified date range.
      */
     getUpcomingMovies: function () {
-      this.isLoading = true;
       fetch(
         `https://api.themoviedb.org/3/movie/upcoming?api_key=${this.apiKey}&language=en-US&page=1`
       )
@@ -342,39 +319,27 @@ export default {
           result.results.forEach((element) => {
             this.upcomingMovies.push(element);
           });
-          this.isLoading = false;
         })
-        .catch((error) => {
-          this.isLoading = false;
-        });
+        .catch((error) => {});
     },
     /**
-     *
-     * * This is a release type query that looks for all movies that have a release type of 2 or 3 within the specified date range.
-     *
+     * This is a release type query that looks for all movies that have a release type of 2 or 3 within the specified date range.
      */
     getPopularTvShows: function () {
-      this.isLoading = true;
       fetch(
         `https://api.themoviedb.org/3/tv/popular?api_key=${this.apiKey}&language=en-US&page=1`
       )
         .then((response) => response.json())
         .then((result) => {
-          // console.log(result);
           result.results.forEach((element) => {
             this.popularTvShows.push(element);
           });
-          this.isLoading = false;
         })
-        .catch((error) => {
-          this.isLoading = false;
-        });
+        .catch((error) => {});
     },
     /**
-     *
-     * * Route to details of tv.
+     * Route to details of tv.
      * @param id int - tv id
-     *
      */
     routeToTvDetails: function (id) {
       this.$router.push({
@@ -383,7 +348,7 @@ export default {
       });
     },
     /**
-     * Get Avatar to make it landing page
+     * Get Avatar movi to make it landing page
      */
     getAvatar: function () {
       fetch(

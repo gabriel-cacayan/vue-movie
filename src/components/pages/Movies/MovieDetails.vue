@@ -28,7 +28,7 @@
             v-else
             height="300"
             width="300"
-            :src="cardImagePlaceholder"
+            :src="defaultCardImage"
           ></v-img>
         </div>
         <div class="pa-4">
@@ -72,12 +72,7 @@
           height="500"
           width="500"
         ></v-img>
-        <v-img
-          v-else
-          height="300"
-          width="300"
-          :src="cardImagePlaceholder"
-        ></v-img>
+        <v-img v-else height="300" width="300" :src="defaultCardImage"></v-img>
       </div>
       <div class="pa-4">
         <h1>{{ movieInfo.original_title }}</h1>
@@ -106,6 +101,28 @@
       </div>
     </div>
 
+    <v-container class="my-10 pa-0 bg-yellow" v-if="movieInfo">
+      <h1 class="text-h5 ma-4">Trailers</h1>
+      <v-img
+        v-if="movieInfo.backdrop_path"
+        :src="renderPoster(movieInfo.backdrop_path)"
+        cover
+        class="w-100"
+      ></v-img>
+
+      <v-dialog v-model="dialog" activator="parent" width="auto">
+        <iframe
+          width="560"
+          height="315"
+          src="https://www.youtube-nocookie.com/embed/Di310WS8zLk"
+          title="YouTube video player"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen
+        ></iframe>
+      </v-dialog>
+    </v-container>
+
     <!-- Tabs -->
     <v-container class="bg-black-4 my-10 pa-0">
       <h1 class="text-h5 ma-4">More Details</h1>
@@ -129,7 +146,13 @@
                 md="4"
               >
                 <v-avatar
+                  v-if="cast.profile_path"
                   :image="renderPoster(cast.profile_path)"
+                  size="100"
+                ></v-avatar>
+                <v-avatar
+                  v-else
+                  :image="defaultProfilePicture"
                   size="100"
                 ></v-avatar>
                 <div class="ml-4">
@@ -153,13 +176,20 @@
                   hover
                   v-ripple
                   max-width="344"
-                  :loading="isLoading"
                   @click="getSpecificMovie(movie.id)"
                 >
                   <v-img
-                    :lazy-src="cardImagePlaceholder"
+                    v-if="movie.poster_path"
+                    :lazy-src="defaultCardImage"
                     :src="renderPoster(movie.poster_path)"
                     :alt="movie.poster"
+                    height="250"
+                    cover
+                    eager
+                  ></v-img>
+                  <v-img
+                    v-else
+                    :src="defaultCardImage"
                     height="250"
                     cover
                     eager
@@ -193,8 +223,16 @@
               >
                 <v-card class="mx-auto" hover v-ripple max-width="344" border>
                   <v-img
-                    :lazy-src="cardImagePlaceholder"
+                    v-if="production.logo_path"
+                    :lazy-src="defaultCardImage"
                     :src="renderPoster(production.logo_path)"
+                    height="250"
+                    cover
+                    eager
+                  ></v-img>
+                  <v-img
+                    v-else
+                    :src="defaultCardImage"
                     height="250"
                     cover
                     eager
@@ -259,8 +297,8 @@ export default {
     "transferToCol",
     "apiKey",
     "renderPoster",
-    "movieImagePlaceholder",
-    "cardImagePlaceholder",
+    "defaultCardImage",
+    "defaultProfilePicture",
   ],
   props: ["id"],
   data() {
@@ -275,6 +313,7 @@ export default {
       ],
       casts: null,
       movies: null,
+      dialog: false,
     };
   },
   computed: {
@@ -298,77 +337,54 @@ export default {
   },
   methods: {
     /**
-     *
-     * * Get the primary information about a movie.
+     * Get the primary information about a movie.
      * @param id int - movie id
      */
     getSpecificMovie: function (id) {
-      this.isLoading = true;
-
       if (this.$route.params.id !== id) {
         this.$router.push({ name: "movies.show", params: { id: id } });
       }
 
       fetch(
-        `https://api.themoviedb.org/3/movie/${id}?api_key=${this.apiKey}&language=en-US`
+        `https://api.themoviedb.org/3/movie/${id}?api_key=${this.apiKey}&language=en-US&append_to_response=videos,images`
       )
         .then((response) => response.json())
         .then((result) => {
-          // console.log(result);
+          console.log(result);
           this.movieInfo = result;
-          this.isLoading = false;
         })
-        .catch((error) => {
-          // console.error("Error:", error);
-          this.isLoading = false;
-        });
+        .catch((error) => {});
     },
     /**
-     *
-     * * Get the cast and crew for a movie.
+     * Get the cast and crew for a movie.
      * @param id int - movie id
      */
     getCredits: function (id) {
-      this.isLoading = true;
       fetch(
         `https://api.themoviedb.org/3/movie/${id}/credits?api_key=${this.apiKey}&language=en-US`
       )
         .then((response) => response.json())
         .then((result) => {
-          // console.log(result.cast);
           this.casts = result.cast;
-          this.isLoading = false;
         })
-        .catch((error) => {
-          // console.error("Error:", error);
-          this.isLoading = false;
-        });
+        .catch((error) => {});
     },
     /**
-     *
-     * * Get a list of recommended movies for a movie.
+     * Get a list of recommended movies for a movie.
      * @param id int - movie id
      */
     getRecommendations: function (id) {
-      // console.log(id);
-      this.isLoading = true;
       fetch(
         `https://api.themoviedb.org/3/movie/${id}/recommendations?api_key=${this.apiKey}&language=en-US&page=1`
       )
         .then((response) => response.json())
         .then((result) => {
-          // console.log(result);
           this.movies = result.results;
-          this.isLoading = false;
         })
-        .catch((error) => {
-          // console.error("Error:", error);
-          this.isLoading = false;
-        });
+        .catch((error) => {});
     },
     /**
-     *
-     * * Get the primary person details by id.
+     * Get the primary person details by id.
      * @param id int - cast id
      */
     getPerson: function (id) {
@@ -390,11 +406,8 @@ export default {
 
 <style scoped>
 #main {
-  /* background: url("https://www.pixelstalk.net/wp-content/uploads/2015/12/Avengers-marvel-comics-wallpaper-background.jpg"); */
   background-repeat: no-repeat;
   background-size: cover;
-  /* background: url("https://www.pixelstalk.net/wp-content/uploads/2015/12/Avengers-marvel-comics-wallpaper-background.jpg")
-    center no-repeat; */
   width: 100vw;
   height: 100vh;
   position: relative;

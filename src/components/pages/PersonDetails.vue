@@ -7,15 +7,10 @@
           class="rounded-lg"
           height="400"
           :src="renderPoster(personInfo.profile_path)"
-          :lazy-src="movieImagePlaceholder"
+          :lazy-src="defaultCardImage"
         />
 
-        <img
-          v-else
-          class="rounded-lg"
-          height="400"
-          :src="cardImagePlaceholder"
-        />
+        <img v-else class="rounded-lg" height="400" :src="defaultCardImage" />
 
         <h3 class="mt-4">Personal Info</h3>
         <div class="mt-4">
@@ -101,18 +96,18 @@
         </div>
 
         <!-- Images -->
-        <div class="mt-10" v-if="personImages.length !== 0">
+        <div class="mt-10" v-if="personImages.length !== 0 && !imagesIsLoading">
           <v-chip color="#D32F2F" class="font-weight-medium ma-4">
             Photos
           </v-chip>
-          <v-carousel hide-delimiters show-arrows="hover" v-model="model">
+          <v-carousel hide-delimiters show-arrows v-model="model">
             <v-carousel-item
               v-for="(image, i) in personImages"
               :key="i"
-              :src="renderPoster(image.file_path)"
-              :lazy-src="movieImagePlaceholder"
               :value="i"
-              width="auto"
+              :src="renderPoster(image.file_path)"
+              :lazy-src="defaultCardImage"
+              width="300"
               class="mx-auto"
             >
             </v-carousel-item>
@@ -129,10 +124,10 @@ export default {
   inject: [
     "apiKey",
     "renderPoster",
-    "cardImagePlaceholder",
-    "movieImagePlaceholder",
     "getSpecificMovie",
     "transferToCol",
+    "defaultProfilePicture",
+    "defaultCardImage",
   ],
   props: ["id"],
   data() {
@@ -142,6 +137,7 @@ export default {
       model: 0,
       personCasts: [],
       knownForCarousel: 0,
+      imagesIsLoading: false,
     };
   },
   methods: {
@@ -189,6 +185,7 @@ export default {
      *
      */
     getPersonImages: function () {
+      this.imagesIsLoading = true;
       fetch(
         `https://api.themoviedb.org/3/person/${this.id}/images?api_key=${this.apiKey}`
       )
@@ -197,6 +194,7 @@ export default {
           result.profiles.forEach((element) => {
             this.personImages.push(element);
           });
+          this.imagesIsLoading = false;
         })
         .catch((error) => {});
     },

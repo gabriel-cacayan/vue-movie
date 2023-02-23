@@ -1,28 +1,23 @@
 <template>
-  <v-container fluid>
+  <v-container id="search-result-container">
     <!-- Search Result For Movie -->
-    <div v-if="searchMovies.length != 0" class="pa-4">
+    <div v-if="searchMovies.length != 0" class="pa-4 my-10">
       <h1 class="text-h5 my-4">Your search for - {{ search }}</h1>
       <v-row>
-        <v-col
-          v-for="movie in searchMovies"
-          :key="movie.id"
-          :cols="transferToCol"
-        >
+        <v-col v-for="movie in searchMovies" :key="movie.id" cols="6" md="3">
           <v-card
             class="mx-auto"
             hover
             v-ripple
-            max-width="344"
             @click="getSpecificMovie(movie.id)"
           >
             <v-img
+              v-if="movie.poster_path"
               :src="renderPoster(movie.poster_path)"
-              :lazy-src="cardImagePlaceholder"
-              :alt="movie.poster"
-              height="250"
+              :lazy-src="defaultCardImage"
               cover
             ></v-img>
+            <v-img v-else :src="defaultCardImage" cover></v-img>
 
             <v-card-title>{{ movie.original_title }}</v-card-title>
 
@@ -34,9 +29,7 @@
               <v-spacer></v-spacer>
               <p>
                 {{
-                  movie.release_date
-                    ? parseInt(movie.release_date)
-                    : "No data available."
+                  movie.release_date ? parseInt(movie.release_date) : "Unknown"
                 }}
               </p>
             </v-card-subtitle>
@@ -46,20 +39,21 @@
     </div>
 
     <!-- Search Result For People  -->
-    <div v-if="searchPersons.length != 0" class="pa-4">
+    <div v-if="searchPersons.length != 0" class="pa-4 my-10">
       <h1 class="text-h5 my-4">Your search for - {{ search }}</h1>
       <v-row>
-        <v-col
-          v-for="person in searchPersons"
-          :key="person.id"
-          :cols="transferToCol"
-        >
-          <v-card class="mx-auto" hover v-ripple max-width="344">
+        <v-col v-for="person in searchPersons" :key="person.id" cols="6" md="3">
+          <v-card class="mx-auto" hover v-ripple>
             <v-img
+              v-if="person.profile_path"
               :src="renderPoster(person.profile_path)"
-              :lazy-src="cardImagePlaceholder"
-              :alt="person.name"
-              height="250"
+              :lazy-src="defaultCardImage"
+              cover
+              @click="getPerson(person.id)"
+            ></v-img>
+            <v-img
+              v-else
+              :src="defaultCardImage"
               cover
               @click="getPerson(person.id)"
             ></v-img>
@@ -79,16 +73,21 @@
     </div>
 
     <!-- Search Result For Tvs  -->
-    <div v-if="searchTvs.length != 0" class="pa-4">
+    <div v-if="searchTvs.length != 0" class="pa-4 my-10">
       <h1 class="text-h5 my-4">Your search for - {{ search }}</h1>
       <v-row>
-        <v-col v-for="tv in searchTvs" :key="tv.id" :cols="transferToCol">
-          <v-card class="mx-auto" hover v-ripple max-width="344">
+        <v-col v-for="tv in searchTvs" :key="tv.id" cols="6" md="3">
+          <v-card class="mx-auto" hover v-ripple>
             <v-img
+              v-if="tv.poster_path"
               :src="renderPoster(tv.poster_path)"
-              :lazy-src="cardImagePlaceholder"
-              :alt="tv.name"
-              height="250"
+              :lazy-src="defaultCardImage"
+              cover
+              @click="getTvDetails(tv.id)"
+            ></v-img>
+            <v-img
+              v-else
+              :src="defaultCardImage"
               cover
               @click="getTvDetails(tv.id)"
             ></v-img>
@@ -121,7 +120,7 @@ export default {
     "renderPoster",
     "transferToCol",
     "getSpecificMovie",
-    "cardImagePlaceholder",
+    "defaultCardImage",
   ],
   data() {
     return {
@@ -134,9 +133,7 @@ export default {
   },
   methods: {
     /**
-     * * Search a movie from api.
-     *
-     *
+     * Search a movie from api.
      */
     searchMovie: function (search, criteria) {
       if (criteria == "Movie") {
@@ -150,13 +147,8 @@ https://api.themoviedb.org/3/search/movie?api_key=${this.apiKey}&language=en-US&
             result.results.forEach((element) => {
               this.searchMovies.push(element);
             });
-
-            this.isLoading = false;
           })
-          .catch((error) => {
-            console.error("Error:", error);
-            this.isLoading = false;
-          });
+          .catch((error) => {});
       } else if (criteria == "Tv") {
         fetch(
           `
@@ -165,17 +157,11 @@ https://api.themoviedb.org/3/search/tv?api_key=${this.apiKey}&language=en-US&que
         )
           .then((response) => response.json())
           .then((result) => {
-            // console.log(result);
             result.results.forEach((element) => {
               this.searchTvs.push(element);
             });
-
-            this.isLoading = false;
           })
-          .catch((error) => {
-            console.error("Error:", error);
-            this.isLoading = false;
-          });
+          .catch((error) => {});
       } else {
         fetch(
           `
@@ -187,27 +173,19 @@ https://api.themoviedb.org/3/search/person?api_key=${this.apiKey}&language=en-US
             result.results.forEach((element) => {
               this.searchPersons.push(element);
             });
-            // console.log(result);
-
-            this.isLoading = false;
           })
-          .catch((error) => {
-            console.error("Error:", error);
-            this.isLoading = false;
-          });
+          .catch((error) => {});
       }
     },
     /**
-     *
-     * * Get the primary person details by id.
+     * Get the primary person details by id.
      * @param id int - cast id
      */
     getPerson: function (id) {
       this.$router.push({ name: "persons.show", params: { id: id } });
     },
     /**
-     *
-     * * Get the primary TV show details by id.
+     * Get the primary TV show details by id.
      * @param id int - tv id
      */
     getTvDetails: function (id) {
@@ -220,4 +198,8 @@ https://api.themoviedb.org/3/search/person?api_key=${this.apiKey}&language=en-US
 };
 </script>
 
-<style></style>
+<style scoped>
+#search-result-container {
+  min-height: 100vh;
+}
+</style>

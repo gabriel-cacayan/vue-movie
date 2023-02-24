@@ -1,5 +1,9 @@
 <template>
-  <v-container class="mt-4 pa-0" v-if="personInfo">
+  <v-container
+    class="my-10 pa-0"
+    v-if="personInfo"
+    id="personal-details-container"
+  >
     <div class="d-flex flex-column flex-md-row">
       <div class="d-flex flex-column align-start justify-start pa-4">
         <img
@@ -30,14 +34,16 @@
         <div class="mt-4">
           <p class="font-weight-medium">Birthday</p>
           <p class="text-grey">
-            {{ personInfo.birthday }}
+            {{ personInfo.birthday ? personInfo.birthday : "No data" }}
           </p>
         </div>
 
         <div class="mt-4">
           <p class="font-weight-medium">Place of birth</p>
           <p class="text-grey">
-            {{ personInfo.place_of_birth }}
+            {{
+              personInfo.place_of_birth ? personInfo.place_of_birth : "No data"
+            }}
           </p>
         </div>
 
@@ -49,7 +55,10 @@
         </div>
 
         <div class="mt-4">
-          <p class="font-weight-medium">
+          <p
+            class="font-weight-medium"
+            v-if="personInfo.also_known_as.length >= 1"
+          >
             Also known as
             <template
               v-for="(value, i) in personInfo.also_known_as"
@@ -62,13 +71,11 @@
           </p>
         </div>
       </div>
-      <div class="mt-4 mt-md-0 px-md-4">
+      <div class="mt-4 mt-md-0 px-md-4 w-100">
         <div class="pa-4">
           <h1>{{ personInfo.name }}</h1>
-          <v-chip color="#D32F2F" class="font-weight-medium mt-8">
-            Biography
-          </v-chip>
-          <p class="mt-4">
+          <p class="font-weight-medium mt-8">Biography</p>
+          <p class="mt-4 text-grey-lighten-1">
             {{
               personInfo.biography
                 ? personInfo.biography
@@ -77,41 +84,99 @@
           </p>
         </div>
 
-        <!-- Known For -->
-        <div class="mt-10" v-if="personCasts">
-          <v-chip color="#D32F2F" class="font-weight-medium ma-4">
-            Known For
-          </v-chip>
-          <!-- List -->
-          <v-list lines="two">
-            <v-list-item
-              v-for="cast in personCasts"
-              :key="cast.id"
-              :subtitle="cast.original_title"
-              :title="cast.character"
-              :prepend-avatar="renderPoster(cast.backdrop_path)"
+        <v-row no-gutters class="mt-10 px-4">
+          <v-col md="9">
+            <p class="font-weight-medium">Known For</p>
+          </v-col>
+          <v-col md="3" align="end">
+            <router-link
+              :to="{ name: 'persons.movie', params: { id: id } }"
+              class="text-decoration-none"
+            >
+              <v-icon
+                color="#D32F2F"
+                icon="mdi-chevron-right"
+                size="x-large"
+              ></v-icon>
+            </router-link>
+          </v-col>
+        </v-row>
+        <v-row v-if="personCasts">
+          <v-col v-for="cast in personCasts" :key="cast.id" cols="12" md="6">
+            <v-row
+              v-ripple
+              class="border pointer"
+              no-gutters
               @click="getSpecificMovie(cast.id)"
-            ></v-list-item>
-          </v-list>
-        </div>
+            >
+              <v-col md="3">
+                <v-img
+                  v-if="cast.poster_path"
+                  :height="200"
+                  :src="renderPoster(cast.poster_path)"
+                  :lazy-src="defaultCardImage"
+                  cover
+                ></v-img>
+                <v-img
+                  v-else
+                  :height="200"
+                  :src="defaultCardImage"
+                  cover
+                ></v-img>
+              </v-col>
+              <v-col md="9" class="pa-4">
+                <div>
+                  <p class="text-h6 mb-2">{{ cast.original_title }}</p>
+                  <p class="text-subtitle-2 text-grey-darken-1 mb-4">
+                    {{ cast.character }}
+                  </p>
+                  <p class="text-grey-darken-1 mb-2">
+                    <v-icon
+                      color="#FFEB3B"
+                      icon="mdi-star"
+                      size="x-small"
+                    ></v-icon>
+                    {{ Math.round(cast.vote_average) }}
+                  </p>
+                  <p class="text-grey-darken-1 mb-2">
+                    {{ parseInt(cast.release_date) }}
+                  </p>
+                </div>
+              </v-col>
+            </v-row>
+          </v-col>
+        </v-row>
 
-        <!-- Images -->
-        <div class="mt-10" v-if="personImages.length !== 0 && !imagesIsLoading">
-          <v-chip color="#D32F2F" class="font-weight-medium ma-4">
-            Photos
-          </v-chip>
-          <v-carousel hide-delimiters show-arrows v-model="model">
-            <v-carousel-item
+        <!-- Photos -->
+        <div
+          class="mt-10 px-4"
+          v-if="personImages.length !== 0 && !imagesIsLoading"
+        >
+          <p class="font-weight-medium mb-4">Photos</p>
+
+          <lightgallery
+            :settings="{
+              speed: 500,
+              plugins: plugins,
+              mobileSettings: mobileSettings,
+              closeOnTap: true,
+            }"
+          >
+            <a
               v-for="(image, i) in personImages"
               :key="i"
-              :value="i"
-              :src="renderPoster(image.file_path)"
-              :lazy-src="defaultCardImage"
-              width="300"
-              class="mx-auto"
+              :href="renderPoster(image.file_path)"
+              :onBeforeOpen="onBeforeOpen"
+              :onBeforeClose="onBeforeClose"
+              :data-lg-size="`${image.width}-${image.height}`"
             >
-            </v-carousel-item>
-          </v-carousel>
+              <img
+                v-show="i == 0 || openImageGallery == true"
+                :src="renderPoster(image.file_path)"
+                height="300"
+              />
+            </a>
+          </lightgallery>
         </div>
       </div>
     </div>
@@ -120,7 +185,14 @@
 </template>
 
 <script>
+import Lightgallery from "lightgallery/vue";
+import lgThumbnail from "lightgallery/plugins/thumbnail";
+import lgZoom from "lightgallery/plugins/zoom";
+
 export default {
+  components: {
+    Lightgallery,
+  },
   inject: [
     "apiKey",
     "renderPoster",
@@ -138,18 +210,29 @@ export default {
       personCasts: [],
       knownForCarousel: 0,
       imagesIsLoading: false,
+      plugins: [lgThumbnail, lgZoom],
+      openImageGallery: false,
+      mobileSettings: {
+        controls: true,
+        showCloseIcon: true,
+        download: true,
+      },
     };
   },
   methods: {
+    onBeforeOpen: function () {
+      this.openImageGallery = true;
+    },
+    onBeforeClose: function () {
+      this.openImageGallery = false;
+    },
     addComma: function (value, i) {
       return this.personInfo.also_known_as.length == i + 1
         ? value
         : value + ",";
     },
     /**
-     *
-     * * Get the primary person details by id.
-     *
+     * Get the primary person details by id.
      */
     getPerson: function () {
       fetch(
@@ -162,9 +245,7 @@ export default {
         .catch((error) => {});
     },
     /**
-     *
-     * * Get the movie credits for a person.
-     *
+     * Get the movie credits for a person.
      */
     getPersonMovieCredits: function () {
       fetch(
@@ -172,17 +253,20 @@ export default {
       )
         .then((response) => response.json())
         .then((result) => {
-          // console.log(result);
-          result.cast.forEach((element) => {
-            this.personCasts.push(element);
+          let sortedByPopularity = result.cast.sort(function (a, b) {
+            return b.popularity - a.popularity;
+          });
+
+          sortedByPopularity.forEach((element, i) => {
+            if (i < 4) {
+              this.personCasts.push(element);
+            }
           });
         })
         .catch((error) => {});
     },
     /**
-     *
-     * * Get the images for a person.
-     *
+     * Get the images for a person.
      */
     getPersonImages: function () {
       this.imagesIsLoading = true;
@@ -191,10 +275,27 @@ export default {
       )
         .then((response) => response.json())
         .then((result) => {
+          // console.log(result);
           result.profiles.forEach((element) => {
             this.personImages.push(element);
           });
           this.imagesIsLoading = false;
+        })
+        .catch((error) => {});
+    },
+    /**
+     * Get tagged images for a person.
+     */
+    getPersonTaggedImages: function () {
+      fetch(
+        `https://api.themoviedb.org/3/person/6384/tagged_images?api_key=fd920f7d47c80b3bf8615aec1773db04&language=en-US&page=1`
+      )
+        .then((response) => response.json())
+        .then((result) => {
+          // console.log(result);
+          // result.profiles.forEach((element) => {
+          //   this.personImages.push(element);
+          // });
         })
         .catch((error) => {});
     },
@@ -203,11 +304,21 @@ export default {
     this.getPerson();
     this.getPersonMovieCredits();
     this.getPersonImages();
+    // this.getPersonTaggedImages();
   },
   updated() {
     this.getPersonImages();
+    // this.getPersonTaggedImages();
   },
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.pointer {
+  cursor: pointer;
+}
+
+#personal-details-container {
+  min-height: 100vh;
+}
+</style>

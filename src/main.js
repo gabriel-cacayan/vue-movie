@@ -10,6 +10,7 @@ import NotFound from "./components/NotFound.vue";
 import SearchResult from "./components/pages/Search/SearchResult.vue";
 import FindMovie from "./components/pages/Search/FindMovie.vue";
 import TvDetails from "./components/pages/TV/TvDetails.vue";
+import PersonMovies from "./components/pages/PersonMovies.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -33,6 +34,12 @@ const router = createRouter({
       path: "/person/:id(\\d+)",
       name: "persons.show",
       component: PersonDetails,
+      props: true,
+    },
+    {
+      path: "/person/:id(\\d+)/movies",
+      name: "persons.movie",
+      component: PersonMovies,
       props: true,
     },
     {

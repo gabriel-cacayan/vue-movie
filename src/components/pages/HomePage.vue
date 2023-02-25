@@ -58,8 +58,7 @@
             {{ runtime }}
           </p>
           <v-btn
-            color="info"
-            variant="outlined"
+            class="bg-yellow-accent-4"
             :to="{ name: 'movies.show', params: { id: landingInfo.id } }"
             >View Details</v-btn
           >

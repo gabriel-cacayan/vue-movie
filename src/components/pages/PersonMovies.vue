@@ -1,6 +1,8 @@
 <template>
   <v-container class="my-10">
-    <v-btn class="mb-4" color="info" @click="goBack">Go Back</v-btn>
+    <div class="d-flex justify-end mb-8">
+      <v-btn class="bg-yellow-accent-4" @click="goBack">Go Back</v-btn>
+    </div>
     <v-row v-if="personCasts">
       <v-col v-for="cast in personCasts" :key="cast.id" cols="12" md="6">
         <v-row

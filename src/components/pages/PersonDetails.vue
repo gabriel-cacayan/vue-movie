@@ -84,17 +84,17 @@
           </p>
         </div>
 
-        <v-row no-gutters class="mt-10 px-4">
+        <v-row no-gutters class="mt-10">
           <v-col md="9">
-            <p class="font-weight-medium">Known For</p>
+            <p class="text-h4">Known For</p>
           </v-col>
-          <v-col md="3" align="end">
+          <v-col md="3" align="end" justify="center">
             <router-link
               :to="{ name: 'persons.movie', params: { id: id } }"
               class="text-decoration-none"
             >
               <v-icon
-                color="#D32F2F"
+                color="#FFD600"
                 icon="mdi-chevron-right"
                 size="x-large"
               ></v-icon>
@@ -148,11 +148,8 @@
         </v-row>
 
         <!-- Photos -->
-        <div
-          class="mt-10 px-4"
-          v-if="personImages.length !== 0 && !imagesIsLoading"
-        >
-          <p class="font-weight-medium mb-4">Photos</p>
+        <div class="mt-10" v-if="personImages.length !== 0 && !imagesIsLoading">
+          <p class="text-h4 mb-4">Photos</p>
 
           <lightgallery
             :settings="{
@@ -174,6 +171,7 @@
                 v-show="i == 0 || openImageGallery == true"
                 :src="renderPoster(image.file_path)"
                 height="300"
+                class="border"
               />
             </a>
           </lightgallery>

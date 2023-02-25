@@ -11,6 +11,7 @@ import SearchResult from "./components/pages/Search/SearchResult.vue";
 import FindMovie from "./components/pages/Search/FindMovie.vue";
 import TvDetails from "./components/pages/TV/TvDetails.vue";
 import PersonMovies from "./components/pages/PersonMovies.vue";
+import TvCasts from "./components/pages/TV/TvCasts.vue";
 
 const router = createRouter({
   history: createWebHistory(),

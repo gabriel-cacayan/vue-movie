@@ -25,7 +25,7 @@
     <div class="d-none d-md-flex align-center">
       <router-link
         :to="{ name: 'home' }"
-        class="font-weight-bold text-h5 text-red-darken-2 text-decoration-none mx-5"
+        class="font-weight-bold text-h5 text-yellow-accent-4 text-decoration-none mx-5"
       >
         Vue Movie
       </router-link>

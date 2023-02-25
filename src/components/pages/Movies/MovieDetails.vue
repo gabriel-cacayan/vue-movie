@@ -38,7 +38,7 @@
           <p class="mb-4">
             Genres:
             <template v-for="genre in movieInfo.genres" :key="genre.id">
-              <v-chip class="mr-2">
+              <v-chip class="mr-2 text-yellow-accent-4">
                 {{ genre.name }}
               </v-chip>
             </template>
@@ -105,7 +105,7 @@
       <lightgallery :settings="{ speed: 500, plugins: plugins }">
         <a
           data-lg-size="1280-720"
-          data-src="https://youtu.be/lRVJuPI5IXI"
+          data-src="//www.youtube.com/watch?v=EIUJfXk3_3w"
           data-poster="https://img.youtube.com/vi/EIUJfXk3_3w/maxresdefault.jpg"
           data-sub-html="<h4>Puffin Hunts Fish To Feed Puffling | Blue Planet II | BBC Earth</h4><p>On the heels of Planet Earth II's record-breaking Emmy nominations, BBC America presents stunning visual soundscapes from the series' amazing habitats.</p>"
         >
@@ -115,9 +115,6 @@
             class="img-responsive"
             src="https://img.youtube.com/vi/EIUJfXk3_3w/maxresdefault.jpg"
           />
-        </a>
-        <a :href="renderPoster(movieInfo.backdrop_path)">
-          <img alt="img2" :src="renderPoster(movieInfo.backdrop_path)" />
         </a>
       </lightgallery>
     </v-container> -->
@@ -148,7 +145,7 @@
     <v-container class="bg-black-4 my-10 pa-0">
       <h1 class="text-h5 ma-4">More Details</h1>
       <v-card>
-        <v-tabs v-model="tab" color="red-accent-4" align-tabs="title">
+        <v-tabs v-model="tab" color="yellow-accent-4" align-tabs="title">
           <v-tab v-for="item in items" :key="item" :value="item">{{
             item
           }}</v-tab>
@@ -316,7 +313,6 @@
 import Lightgallery from "lightgallery/vue";
 import lgThumbnail from "lightgallery/plugins/thumbnail";
 import lgZoom from "lightgallery/plugins/zoom";
-// import lgVideo from "lightgallery/plugins/video";
 import lgVideo from "lightgallery/plugins/video";
 
 export default {
@@ -344,7 +340,7 @@ export default {
       casts: null,
       movies: null,
       dialog: false,
-      plugins: [lgThumbnail, lgZoom, lgVideo],
+      plugins: [lgVideo, lgThumbnail, lgZoom],
     };
   },
   computed: {
@@ -381,7 +377,7 @@ export default {
       )
         .then((response) => response.json())
         .then((result) => {
-          console.log(result);
+          // console.log(result);
           this.movieInfo = result;
         })
         .catch((error) => {});

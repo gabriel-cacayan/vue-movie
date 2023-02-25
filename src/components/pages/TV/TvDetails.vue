@@ -37,7 +37,7 @@
         <p class="mb-4">
           Genres:
           <template v-for="genre in tvInfo.genres" :key="genre.id">
-            <v-chip class="mr-2">
+            <v-chip class="mr-2 text-yellow-accent-4">
               {{ genre.name }}
             </v-chip>
           </template>
@@ -84,7 +84,7 @@
       <p class="mb-4">
         Genres:
         <template v-for="genre in tvInfo.genres" :key="genre.id">
-          <v-chip class="mr-2">
+          <v-chip class="mr-2 text-yellow-accent-4">
             {{ genre.name }}
           </v-chip>
         </template>
@@ -101,72 +101,150 @@
   </div>
 
   <v-container v-if="tvInfo">
-    <v-card
-      border
-      class="my-10"
-      v-for="season in tvInfo.seasons"
-      :key="season.id"
-    >
-      <v-row align="center">
-        <v-col cols="3" md="2" class="pa-0">
-          <v-img
-            v-if="season.poster_path"
-            width="1000"
-            aspect-ratio="16/9"
-            eager
-            :src="renderPoster(season.poster_path)"
-            cover
-          ></v-img>
-          <v-img
-            v-else
-            width="1000"
-            aspect-ratio="16/9"
-            eager
-            :src="cardImagePlaceholder"
-            cover
-          ></v-img>
-        </v-col>
-        <v-col cols="9" md="10">
-          <div class="ml-4 pa-4">
-            <h1>{{ season.name }}</h1>
-            <p class="font-weight-bold">
-              {{ season.air_date ? parseInt(season.air_date) : "Unknown" }} |
-              {{ pluralizeTheEpisode(season.episode_count) }}
-            </p>
-          </div>
-        </v-col>
-      </v-row>
-    </v-card>
+    <v-row no-gutters class="mt-10">
+      <v-col md="12">
+        <p class="text-h4">Seasons</p>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col v-for="season in tvInfo.seasons" :key="season.id" cols="12" md="6">
+        <v-row v-ripple class="border pointer" no-gutters>
+          <v-col md="3">
+            <v-img
+              v-if="season.poster_path"
+              :height="200"
+              :src="renderPoster(season.poster_path)"
+              :lazy-src="defaultCardImage"
+              cover
+            ></v-img>
+            <v-img v-else :height="200" :src="defaultCardImage" cover></v-img>
+          </v-col>
+          <v-col md="9" class="pa-4">
+            <div>
+              <p class="text-h6 mb-2">{{ season.name }}</p>
+              <p class="text-subtitle-2 text-grey-darken-1 mb-4">
+                {{ pluralizeTheEpisode(season.episode_count) }} |
+                {{ season.air_date ? parseInt(season.air_date) : "Unknown" }}
+              </p>
+              <p class="text-caption">{{ season.overview }}</p>
+            </div>
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-row>
   </v-container>
-  <!-- <pre>
-        {{ tvInfo }}
-    </pre
-  > -->
+
+  <!-- Photos -->
+  <v-container
+    class="my-10"
+    v-if="
+      backdropImages.length !== 0 &&
+      posterImages.length !== 0 &&
+      !imagesIsLoading
+    "
+  >
+    <p class="text-h4 mb-4">Photos</p>
+
+    <lightgallery
+      :settings="{
+        speed: 500,
+        plugins: plugins,
+        mobileSettings: mobileSettings,
+        closeOnTap: true,
+      }"
+    >
+      <a
+        v-for="(image, i) in backdropImages"
+        :key="i"
+        :href="renderPoster(image.file_path)"
+        :onBeforeOpen="onBeforeOpen"
+        :onBeforeClose="onBeforeClose"
+        :data-lg-size="`${image.width}-${image.height}`"
+      >
+        <img
+          v-show="i == 0 || openImageGallery == true"
+          :src="renderPoster(image.file_path)"
+          height="200"
+          class="border"
+        />
+      </a>
+      <a
+        v-for="(image, i) in posterImages"
+        :key="i"
+        :href="renderPoster(image.file_path)"
+        :onBeforeOpen="onBeforeOpen"
+        :onBeforeClose="onBeforeClose"
+        :data-lg-size="`${image.width}-${image.height}`"
+      >
+        <img
+          v-show="i == 0 || openImageGallery == true"
+          :src="renderPoster(image.file_path)"
+          height="200"
+          class="border ml-0 ml-md-4"
+        />
+      </a>
+    </lightgallery>
+  </v-container>
+
+  <!-- <v-container class="my-10">
+    <v-btn :to="{ name: 'tv.casts', params: { id: id } }">Casts</v-btn>
+  </v-container> -->
 </template>
 
 <script>
+import Lightgallery from "lightgallery/vue";
+import lgThumbnail from "lightgallery/plugins/thumbnail";
+import lgZoom from "lightgallery/plugins/zoom";
+
 export default {
-  inject: ["apiKey", "renderPoster", "cardImagePlaceholder"],
+  components: {
+    Lightgallery,
+  },
+  inject: ["apiKey", "renderPoster", "defaultCardImage"],
   props: ["id"],
   data() {
     return {
       tvInfo: null,
+      backdropImages: [],
+      posterImages: [],
+      imagesIsLoading: false,
+      plugins: [lgThumbnail, lgZoom],
+      openImageGallery: false,
+      mobileSettings: {
+        controls: true,
+        showCloseIcon: true,
+        download: true,
+      },
     };
   },
   methods: {
+    onBeforeOpen: function () {
+      this.openImageGallery = true;
+    },
+    onBeforeClose: function () {
+      this.openImageGallery = false;
+    },
     /**
-     *
-     * * Get the primary TV show details by id.
+     * Get the primary TV show details by id.
      * @param id int - tv id
      */
     getTvDetails: function (id) {
+      this.imagesIsLoading = true;
       fetch(
-        `https://api.themoviedb.org/3/tv/${id}?api_key=${this.apiKey}&language=en-US`
+        `https://api.themoviedb.org/3/tv/${id}?api_key=${this.apiKey}&append_to_response=videos,images`
       )
         .then((response) => response.json())
         .then((result) => {
-          //   console.log(result);
+          result.images.backdrops.forEach((element) => {
+            this.backdropImages.push(element);
+          });
+
+          result.images.posters.forEach((element) => {
+            this.posterImages.push(element);
+          });
+          // console.log(result.images.posters);
           this.tvInfo = result;
+          this.imagesIsLoading = false;
         })
         .catch((error) => {});
     },

@@ -28,9 +28,7 @@
               </div>
               <v-spacer></v-spacer>
               <p>
-                {{
-                  movie.release_date ? parseInt(movie.release_date) : "Unknown"
-                }}
+                {{ movie.release_date ? parseInt(movie.release_date) : "N/A" }}
               </p>
             </v-card-subtitle>
           </v-card>
@@ -101,9 +99,7 @@
               </div>
               <v-spacer></v-spacer>
               <p>
-                {{
-                  tv.first_air_date ? parseInt(tv.first_air_date) : "Unknown"
-                }}
+                {{ tv.first_air_date ? parseInt(tv.first_air_date) : "N/A" }}
               </p>
             </v-card-subtitle>
           </v-card>

@@ -6,7 +6,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import MovieDetails from "./components/pages/Movies/MovieDetails.vue";
 import HomePage from "./components/pages/HomePage.vue";
 import PersonDetails from "./components/pages/Person/PersonDetails.vue";
-import NotFound from "./components/NotFound.vue";
+import NotFound from "./components/pages/NotFound.vue";
 import SearchResult from "./components/pages/Search/SearchResult.vue";
 import FindMovie from "./components/pages/Search/FindMovie.vue";
 import TvDetails from "./components/pages/TV/TvDetails.vue";
@@ -14,6 +14,8 @@ import MovieCredits from "./components/pages/Person/MovieCredits.vue";
 import TvCasts from "./components/pages/TV/TvCasts.vue";
 import TvPage from "./components/pages/TvPage.vue";
 import TvCredits from "./components/pages/Person/TvCredits.vue";
+import TvSeason from "./components/pages/TV/TvSeason.vue";
+import TvEpisode from "./components/pages/TV/TvEpisode.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -68,7 +70,7 @@ const router = createRouter({
     },
     {
       path: "/tv/:id(\\d+)",
-      name: "tv",
+      name: "tv.show",
       component: TvDetails,
       props: true,
     },
@@ -79,11 +81,24 @@ const router = createRouter({
       props: true,
     },
     {
+      path: "/tv/:id(\\d+)/season/:seasonNumber",
+      name: "tv.season",
+      component: TvSeason,
+      props: true,
+    },
+    {
+      path: "/tv/:id(\\d+)/season/:seasonNumber/episode/:episodeNumber",
+      name: "tv.episode",
+      component: TvEpisode,
+      props: true,
+    },
+    {
       path: "/:pathMatch(.*)*",
       name: "NotFound",
       component: NotFound,
     },
   ],
+  linkActiveClass: "text-yellow-accent-4",
   scrollBehavior(to, from, savedPosition) {
     // always scroll to top
     return { top: 0 };

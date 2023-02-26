@@ -23,7 +23,7 @@
           </v-col>
           <v-col md="9" class="pa-4">
             <div>
-              <p class="text-h6 mb-2">{{ credit.original_title }}</p>
+              <p class="text-h6 mb-2">{{ credit.original_name }}</p>
               <p class="text-subtitle-2 text-grey-darken-1 mb-4">
                 {{ credit.character }}
               </p>

@@ -6,10 +6,13 @@
       color="yellow-accent-4"
     ></v-progress-linear>
 
-    <v-container v-if="tvCasts" class="my-10">
+    <v-container v-if="tvCasts && !isLoading" class="my-10">
       <v-row no-gutters>
-        <v-col md="12">
+        <v-col md="9">
           <p class="text-h4">Casts</p>
+        </v-col>
+        <v-col md="3" align="end">
+          <v-btn class="bg-yellow-accent-4" @click="goBack">Go Back</v-btn>
         </v-col>
       </v-row>
       <v-row>
@@ -75,6 +78,9 @@ export default {
           this.isLoading = false;
         })
         .catch((error) => {});
+    },
+    goBack() {
+      this.$router.go(-1);
     },
   },
   mounted() {

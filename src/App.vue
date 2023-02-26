@@ -53,21 +53,18 @@ export default {
       return "https://image.tmdb.org/t/p/original" + image;
     },
     /**
-     *
      * @param id int - movie id
      */
     getMovieDetails: function (id) {
       this.$router.push({ name: "movies.show", params: { id: id } });
     },
     /**
-     *
      * @param id int - tv id
      */
     getTvDetails: function (id) {
-      this.$router.push({ name: "tv", params: { id: id } });
+      this.$router.push({ name: "tv.show", params: { id: id } });
     },
     /**
-     * Get the primary person details by id.
      * @param id int - cast id
      */
     getPersonDetails: function (id) {

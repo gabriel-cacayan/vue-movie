@@ -123,7 +123,12 @@
           cols="12"
           md="6"
         >
-          <v-row v-ripple class="border pointer" no-gutters>
+          <v-row
+            v-ripple
+            class="border pointer"
+            no-gutters
+            @click="goToSeason(season.season_number)"
+          >
             <v-col md="3">
               <v-img
                 v-if="season.poster_path"
@@ -139,7 +144,7 @@
                 <p class="text-h6 mb-2">{{ season.name }}</p>
                 <p class="text-subtitle-2 text-grey-darken-1 mb-4">
                   {{ pluralizeTheEpisode(season.episode_count) }} |
-                  {{ season.air_date ? parseInt(season.air_date) : "Unknown" }}
+                  {{ season.air_date ? parseInt(season.air_date) : "N/A" }}
                 </p>
               </div>
             </v-col>
@@ -452,6 +457,15 @@ export default {
           this.isLoading = false;
         })
         .catch((error) => {});
+    },
+    /**
+     * @param id int - season id
+     */
+    goToSeason: function (seasonNumber) {
+      this.$router.push({
+        name: "tv.season",
+        params: { id: this.id, seasonNumber: seasonNumber },
+      });
     },
   },
   mounted() {

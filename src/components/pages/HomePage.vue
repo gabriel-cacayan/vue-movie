@@ -1,7 +1,13 @@
 <template>
-  <section class="bg-black">
+  <v-container class="px-0 bg-black" fluid>
+    <v-progress-linear
+      v-if="isLoading"
+      indeterminate
+      color="yellow-accent-4"
+    ></v-progress-linear>
+
     <div
-      v-if="landingInfo"
+      v-if="landingInfo && !isLoading"
       id="main"
       :style="{
         backgroundImage: `url('${renderPoster(landingInfo.backdrop_path)}')`,
@@ -66,7 +72,7 @@
       </div>
     </div>
 
-    <div class="pa-4">
+    <div class="pa-4" v-if="!isLoading">
       <p class="text-grey-lighten-1 mt-4">
         Vue Movie is an online database of information related to films,
         television series, ratings, and reviews.
@@ -74,7 +80,7 @@
     </div>
 
     <!-- Popular this week  -->
-    <div v-if="popularMovies">
+    <div v-if="popularMovies && !isLoading">
       <h1 class="text-h5 ma-4">Popular this week</h1>
       <v-sheet class="my-10 mx-auto">
         <v-slide-group v-model="model" class="pa-4 bg-black" show-arrows>
@@ -114,7 +120,7 @@
     </div>
 
     <!-- Top rated -->
-    <div v-if="topRatedMovies">
+    <div v-if="topRatedMovies && !isLoading">
       <h1 class="text-h5 ma-4">Top Rated</h1>
       <v-sheet class="my-10 mx-auto">
         <v-slide-group v-model="model" class="pa-4 bg-black" show-arrows>
@@ -154,7 +160,7 @@
     </div>
 
     <!-- Upcoming -->
-    <div v-if="upcomingMovies">
+    <div v-if="upcomingMovies && !isLoading">
       <h1 class="text-h5 ma-4">Upcoming</h1>
       <v-sheet class="my-10 mx-auto">
         <v-slide-group v-model="model" class="pa-4 bg-black" show-arrows>
@@ -194,7 +200,7 @@
     </div>
 
     <!-- Popular TV Shows -->
-    <div v-if="popularTvShows">
+    <div v-if="popularTvShows && !isLoading">
       <h1 class="text-h5 ma-4">Popular TV Shows</h1>
       <v-sheet class="my-10 mx-auto">
         <v-slide-group v-model="model" class="pa-4 bg-black" show-arrows>
@@ -233,7 +239,7 @@
       </v-sheet>
     </div>
     <br />
-  </section>
+  </v-container>
 </template>
 
 <script>
@@ -253,6 +259,7 @@ export default {
       model: 0,
       popularTvShows: [],
       landingInfo: null,
+      isLoading: false,
     };
   },
   computed: {
@@ -279,6 +286,7 @@ export default {
      * Get a list of the current popular movies on TMDB. This list updates daily.
      */
     getPopularMovies: function () {
+      this.isLoading = true;
       fetch(
         `https://api.themoviedb.org/3/movie/popular?api_key=${this.apiKey}&language=en-US&page=1`
       )
@@ -287,6 +295,7 @@ export default {
           result.results.forEach((element) => {
             this.popularMovies.push(element);
           });
+          this.isLoading = false;
         })
         .catch((error) => {});
     },

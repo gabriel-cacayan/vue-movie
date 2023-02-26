@@ -22,13 +22,13 @@
               :src="renderPoster(tv.poster_path)"
               :lazy-src="defaultCardImage"
               cover
-              @click="routeToTvDetails(tv.id)"
+              @click="getTvDetails(tv.id)"
             ></v-img>
             <v-img
               v-else
               :src="defaultCardImage"
               cover
-              @click="routeToTvDetails(tv.id)"
+              @click="getTvDetails(tv.id)"
             ></v-img>
 
             <v-card-title>{{ tv.original_name }}</v-card-title>
@@ -54,7 +54,7 @@
     </v-container>
 
     <!-- Search Result For Tvs  -->
-    <div
+    <v-container
       v-if="
         criteria == 'Top Rated' &&
         TopRatedTvShows.length != 0 &&
@@ -71,13 +71,13 @@
               :src="renderPoster(tv.poster_path)"
               :lazy-src="defaultCardImage"
               cover
-              @click="routeToTvDetails(tv.id)"
+              @click="getTvDetails(tv.id)"
             ></v-img>
             <v-img
               v-else
               :src="defaultCardImage"
               cover
-              @click="routeToTvDetails(tv.id)"
+              @click="getTvDetails(tv.id)"
             ></v-img>
 
             <v-card-title>{{ tv.original_name }}</v-card-title>
@@ -100,13 +100,13 @@
           <v-pagination :length="totalPages" v-model="page"></v-pagination>
         </v-col>
       </v-row>
-    </div>
+    </v-container>
   </v-container>
 </template>
 
 <script>
 export default {
-  inject: ["apiKey", "renderPoster", "defaultCardImage"],
+  inject: ["apiKey", "renderPoster", "defaultCardImage", "getTvDetails"],
   data() {
     return {
       popularTvShows: [],
@@ -173,16 +173,6 @@ https://api.themoviedb.org/3/tv/top_rated?api_key=${this.apiKey}&language=en-US&
           this.isLoading = false;
         })
         .catch((error) => {});
-    },
-    /**
-     * Route to details of tv.
-     * @param id int - tv id
-     */
-    routeToTvDetails: function (id) {
-      this.$router.push({
-        name: "tv",
-        params: { id: id },
-      });
     },
   },
   mounted() {

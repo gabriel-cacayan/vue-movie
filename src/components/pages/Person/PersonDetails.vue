@@ -1,10 +1,12 @@
 <template>
-  <v-container
-    class="my-10 pa-0"
-    v-if="personInfo"
-    id="personal-details-container"
-  >
-    <div class="d-flex flex-column flex-md-row">
+  <v-container class="px-0" id="personal-details-container" fluid>
+    <v-progress-linear
+      v-if="isLoading"
+      indeterminate
+      color="yellow-accent-4"
+    ></v-progress-linear>
+
+    <v-container class="pa-0 d-flex flex-column flex-md-row" v-if="personInfo">
       <div class="d-flex flex-column align-start justify-start pa-4">
         <img
           v-if="personInfo.profile_path"
@@ -79,145 +81,152 @@
         </div>
 
         <!-- Movie Credits -->
-        <v-row no-gutters class="mt-10">
-          <v-col md="9">
-            <p class="text-h4">Movie Credits</p>
-          </v-col>
-          <v-col md="3" align="end" justify="center">
-            <router-link
-              :to="{ name: 'persons.movie', params: { id: id } }"
-              class="text-decoration-none"
+        <v-container v-if="personMovieCredits && !isLoading">
+          <v-row no-gutters class="mt-10">
+            <v-col md="9">
+              <p class="text-h4">Movie Credits</p>
+            </v-col>
+            <v-col md="3" align="end" justify="center">
+              <router-link
+                :to="{ name: 'persons.movie', params: { id: id } }"
+                class="text-decoration-none"
+              >
+                <v-icon
+                  color="#FFD600"
+                  icon="mdi-chevron-right"
+                  size="x-large"
+                ></v-icon>
+              </router-link>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col
+              v-for="cast in personMovieCredits"
+              :key="cast.id"
+              cols="12"
+              md="6"
             >
-              <v-icon
-                color="#FFD600"
-                icon="mdi-chevron-right"
-                size="x-large"
-              ></v-icon>
-            </router-link>
-          </v-col>
-        </v-row>
-        <v-row v-if="personMovieCredits">
-          <v-col
-            v-for="cast in personMovieCredits"
-            :key="cast.id"
-            cols="12"
-            md="6"
-          >
-            <v-row
-              v-ripple
-              class="border pointer"
-              no-gutters
-              @click="getMovieDetails(cast.id)"
-            >
-              <v-col md="3">
-                <v-img
-                  v-if="cast.poster_path"
-                  :height="200"
-                  :src="renderPoster(cast.poster_path)"
-                  :lazy-src="defaultCardImage"
-                  cover
-                ></v-img>
-                <v-img
-                  v-else
-                  :height="200"
-                  :src="defaultCardImage"
-                  cover
-                ></v-img>
-              </v-col>
-              <v-col md="9" class="pa-4">
-                <div>
-                  <p class="text-h6 mb-2">{{ cast.original_title }}</p>
-                  <p class="text-subtitle-2 text-grey-darken-1 mb-4">
-                    {{ cast.character }}
-                  </p>
-                  <p class="text-grey-darken-1 mb-2">
-                    <v-icon
-                      color="#FFEB3B"
-                      icon="mdi-star"
-                      size="x-small"
-                    ></v-icon>
-                    {{ Math.round(cast.vote_average) }}
-                  </p>
-                  <p class="text-grey-darken-1 mb-2">
-                    {{ parseInt(cast.release_date) }}
-                  </p>
-                </div>
-              </v-col>
-            </v-row>
-          </v-col>
-        </v-row>
+              <v-row
+                v-ripple
+                class="border pointer"
+                no-gutters
+                @click="getMovieDetails(cast.id)"
+              >
+                <v-col md="3">
+                  <v-img
+                    v-if="cast.poster_path"
+                    :height="200"
+                    :src="renderPoster(cast.poster_path)"
+                    :lazy-src="defaultCardImage"
+                    cover
+                  ></v-img>
+                  <v-img
+                    v-else
+                    :height="200"
+                    :src="defaultCardImage"
+                    cover
+                  ></v-img>
+                </v-col>
+                <v-col md="9" class="pa-4">
+                  <div>
+                    <p class="text-h6 mb-2">{{ cast.original_title }}</p>
+                    <p class="text-subtitle-2 text-grey-darken-1 mb-4">
+                      {{ cast.character }}
+                    </p>
+                    <p class="text-grey-darken-1 mb-2">
+                      <v-icon
+                        color="#FFEB3B"
+                        icon="mdi-star"
+                        size="x-small"
+                      ></v-icon>
+                      {{ Math.round(cast.vote_average) }}
+                    </p>
+                    <p class="text-grey-darken-1 mb-2">
+                      {{ parseInt(cast.release_date) }}
+                    </p>
+                  </div>
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
+        </v-container>
 
         <!-- Tv Credits -->
-        <v-row no-gutters class="mt-10">
-          <v-col md="9">
-            <p class="text-h4">Tv Credits</p>
-          </v-col>
-          <v-col md="3" align="end" justify="center">
-            <router-link
-              :to="{ name: 'persons.tv', params: { id: id } }"
-              class="text-decoration-none"
+        <v-container v-if="personTvCredits && !isLoading">
+          <v-row no-gutters class="mt-10">
+            <v-col md="9">
+              <p class="text-h4">Tv Credits</p>
+            </v-col>
+            <v-col md="3" align="end" justify="center">
+              <router-link
+                :to="{ name: 'persons.tv', params: { id: id } }"
+                class="text-decoration-none"
+              >
+                <v-icon
+                  color="#FFD600"
+                  icon="mdi-chevron-right"
+                  size="x-large"
+                ></v-icon>
+              </router-link>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col
+              v-for="cast in personTvCredits"
+              :key="cast.id"
+              cols="12"
+              md="6"
             >
-              <v-icon
-                color="#FFD600"
-                icon="mdi-chevron-right"
-                size="x-large"
-              ></v-icon>
-            </router-link>
-          </v-col>
-        </v-row>
-        <v-row v-if="personTvCredits">
-          <v-col
-            v-for="cast in personTvCredits"
-            :key="cast.id"
-            cols="12"
-            md="6"
-          >
-            <v-row
-              v-ripple
-              class="border pointer"
-              no-gutters
-              @click="getTvDetails(cast.id)"
-            >
-              <v-col md="3">
-                <v-img
-                  v-if="cast.poster_path"
-                  :height="200"
-                  :src="renderPoster(cast.poster_path)"
-                  :lazy-src="defaultCardImage"
-                  cover
-                ></v-img>
-                <v-img
-                  v-else
-                  :height="200"
-                  :src="defaultCardImage"
-                  cover
-                ></v-img>
-              </v-col>
-              <v-col md="9" class="pa-4">
-                <div>
-                  <p class="text-h6 mb-2">{{ cast.original_title }}</p>
-                  <p class="text-subtitle-2 text-grey-darken-1 mb-4">
-                    {{ cast.character }}
-                  </p>
-                  <p class="text-grey-darken-1 mb-2">
-                    <v-icon
-                      color="#FFEB3B"
-                      icon="mdi-star"
-                      size="x-small"
-                    ></v-icon>
-                    {{ Math.round(cast.vote_average) }}
-                  </p>
-                  <p class="text-grey-darken-1 mb-2">
-                    {{ parseInt(cast.first_air_date) }}
-                  </p>
-                </div>
-              </v-col>
-            </v-row>
-          </v-col>
-        </v-row>
+              <v-row
+                v-ripple
+                class="border pointer"
+                no-gutters
+                @click="getTvDetails(cast.id)"
+              >
+                <v-col md="3">
+                  <v-img
+                    v-if="cast.poster_path"
+                    :height="200"
+                    :src="renderPoster(cast.poster_path)"
+                    :lazy-src="defaultCardImage"
+                    cover
+                  ></v-img>
+                  <v-img
+                    v-else
+                    :height="200"
+                    :src="defaultCardImage"
+                    cover
+                  ></v-img>
+                </v-col>
+                <v-col md="9" class="pa-4">
+                  <div>
+                    <p class="text-h6 mb-2">{{ cast.original_name }}</p>
+                    <p class="text-subtitle-2 text-grey-darken-1 mb-4">
+                      {{ cast.character }}
+                    </p>
+                    <p class="text-grey-darken-1 mb-2">
+                      <v-icon
+                        color="#FFEB3B"
+                        icon="mdi-star"
+                        size="x-small"
+                      ></v-icon>
+                      {{ Math.round(cast.vote_average) }}
+                    </p>
+                    <p class="text-grey-darken-1 mb-2">
+                      {{ parseInt(cast.first_air_date) }}
+                    </p>
+                  </div>
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
+        </v-container>
 
         <!-- Photos -->
-        <div class="mt-10" v-if="personImages.length !== 0 && !imagesIsLoading">
+        <v-container
+          class="mt-10"
+          v-if="personImages.length !== 0 && !imagesIsLoading"
+        >
           <p class="text-h4 mb-4">Photos</p>
 
           <lightgallery
@@ -244,9 +253,9 @@
               />
             </a>
           </lightgallery>
-        </div>
+        </v-container>
       </div>
-    </div>
+    </v-container>
     <br />
   </v-container>
 </template>
@@ -286,6 +295,7 @@ export default {
         showCloseIcon: true,
         download: true,
       },
+      isLoading: false,
     };
   },
   methods: {
@@ -328,12 +338,14 @@ export default {
      * Get the primary person details by id.
      */
     getPerson: function () {
+      this.isLoading = true;
       fetch(
         `https://api.themoviedb.org/3/person/${this.id}?api_key=${this.apiKey}&language=en-US`
       )
         .then((response) => response.json())
         .then((result) => {
           this.personInfo = result;
+          this.isLoading = false;
         })
         .catch((error) => {});
     },

@@ -1,7 +1,13 @@
 <template>
-  <section>
+  <v-container class="px-0" fluid>
+    <v-progress-linear
+      v-if="isLoading"
+      indeterminate
+      color="yellow-accent-4"
+    ></v-progress-linear>
+
     <div
-      v-if="movieInfo"
+      v-if="movieInfo && !isLoading"
       id="main"
       :style="{
         backgroundImage: `url('${renderPoster(movieInfo.backdrop_path)}')`,
@@ -61,7 +67,7 @@
 
     <!-- Open in mobile -->
     <div
-      v-if="movieInfo"
+      v-if="movieInfo && !isLoading"
       class="d-flex d-md-none flex-column flex-md-row align-center overflow-hidden"
     >
       <div>
@@ -142,7 +148,7 @@
     </v-container> -->
 
     <!-- Tabs -->
-    <v-container class="bg-black-4 my-10 pa-0">
+    <v-container class="bg-black-4 my-10 pa-0" v-if="!isLoading">
       <h1 class="text-h5 ma-4">More Details</h1>
       <v-card>
         <v-tabs v-model="tab" color="yellow-accent-4" align-tabs="title">
@@ -306,7 +312,7 @@
       </v-card>
     </v-container>
     <br />
-  </section>
+  </v-container>
 </template>
 
 <script>
@@ -341,6 +347,7 @@ export default {
       movies: null,
       dialog: false,
       plugins: [lgVideo, lgThumbnail, lgZoom],
+      isLoading: false,
     };
   },
   computed: {
@@ -368,6 +375,7 @@ export default {
      * @param id int - movie id
      */
     getSpecificMovie: function (id) {
+      this.isLoading = true;
       if (this.$route.params.id !== id) {
         this.$router.push({ name: "movies.show", params: { id: id } });
       }
@@ -377,8 +385,8 @@ export default {
       )
         .then((response) => response.json())
         .then((result) => {
-          // console.log(result);
           this.movieInfo = result;
+          this.isLoading = false;
         })
         .catch((error) => {});
     },

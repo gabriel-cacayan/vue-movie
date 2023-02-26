@@ -53,24 +53,25 @@ export default {
       return "https://image.tmdb.org/t/p/original" + image;
     },
     /**
-     * Get the primary information about a movie.
+     *
      * @param id int - movie id
      */
-    getSpecificMovie: function (id) {
-      this.isLoading = true;
-      fetch(
-        `https://api.themoviedb.org/3/movie/${id}?api_key=${this.apiKey}&language=en-US`
-      )
-        .then((response) => response.json())
-        .then((result) => {
-          this.$router.push({ name: "movies.show", params: { id: id } });
-          this.isLoading = false;
-          this.cardId = id;
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-          this.isLoading = false;
-        });
+    getMovieDetails: function (id) {
+      this.$router.push({ name: "movies.show", params: { id: id } });
+    },
+    /**
+     *
+     * @param id int - tv id
+     */
+    getTvDetails: function (id) {
+      this.$router.push({ name: "tv", params: { id: id } });
+    },
+    /**
+     * Get the primary person details by id.
+     * @param id int - cast id
+     */
+    getPersonDetails: function (id) {
+      this.$router.push({ name: "persons.show", params: { id: id } });
     },
   },
   provide() {
@@ -79,9 +80,9 @@ export default {
       transferToCol: this.transferToCol,
       apiKey: this.apiKey,
       renderPoster: this.renderPoster,
-      movieImagePlaceholder: this.movieImagePlaceholder,
-      cardImagePlaceholder: this.cardImagePlaceholder,
-      getSpecificMovie: this.getSpecificMovie,
+      getMovieDetails: this.getMovieDetails,
+      getTvDetails: this.getTvDetails,
+      getPersonDetails: this.getPersonDetails,
       defaultCardImage: this.defaultCardImage,
       defaultProfilePicture: this.defaultProfilePicture,
     };

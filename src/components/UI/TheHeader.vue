@@ -13,6 +13,12 @@
         :to="{ name: 'find' }"
         @click="closeDrawer"
       ></v-list-item>
+      <v-list-item
+        prepend-icon="mdi-television"
+        title="Tv Shows"
+        :to="{ name: 'tv.index', query: { page: 1 } }"
+        @click="closeDrawer"
+      ></v-list-item>
     </v-list>
   </v-navigation-drawer>
 
@@ -40,6 +46,12 @@
         :to="{ name: 'find' }"
         class="text-white text-decoration-none mr-5"
         >Search</router-link
+      >
+
+      <router-link
+        :to="{ name: 'tv.index', query: { page: 1 } }"
+        class="text-white text-decoration-none mr-5"
+        >Tv Shows</router-link
       >
     </div>
     <v-spacer></v-spacer>

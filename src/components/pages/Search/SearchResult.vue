@@ -9,7 +9,7 @@
             class="mx-auto"
             hover
             v-ripple
-            @click="getSpecificMovie(movie.id)"
+            @click="getMovieDetails(movie.id)"
           >
             <v-img
               v-if="movie.poster_path"
@@ -49,13 +49,13 @@
               :src="renderPoster(person.profile_path)"
               :lazy-src="defaultCardImage"
               cover
-              @click="getPerson(person.id)"
+              @click="getPersonDetails(person.id)"
             ></v-img>
             <v-img
               v-else
               :src="defaultCardImage"
               cover
-              @click="getPerson(person.id)"
+              @click="getPersonDetails(person.id)"
             ></v-img>
 
             <v-card-title>{{ person.original_name }}</v-card-title>
@@ -118,8 +118,9 @@ export default {
   inject: [
     "apiKey",
     "renderPoster",
-    "transferToCol",
-    "getSpecificMovie",
+    "getMovieDetails",
+    "getTvDetails",
+    "getPersonDetails",
     "defaultCardImage",
   ],
   data() {
@@ -144,7 +145,11 @@ https://api.themoviedb.org/3/search/movie?api_key=${this.apiKey}&language=en-US&
         )
           .then((response) => response.json())
           .then((result) => {
-            result.results.forEach((element) => {
+            let sortedByVoteCount = result.results.sort(function (a, b) {
+              return b.vote_count - a.vote_count;
+            });
+
+            sortedByVoteCount.forEach((element) => {
               this.searchMovies.push(element);
             });
           })
@@ -170,26 +175,16 @@ https://api.themoviedb.org/3/search/person?api_key=${this.apiKey}&language=en-US
         )
           .then((response) => response.json())
           .then((result) => {
-            result.results.forEach((element) => {
+            let sortedByPopularity = result.results.sort(function (a, b) {
+              return b.popularity - a.popularity;
+            });
+
+            sortedByPopularity.forEach((element) => {
               this.searchPersons.push(element);
             });
           })
           .catch((error) => {});
       }
-    },
-    /**
-     * Get the primary person details by id.
-     * @param id int - cast id
-     */
-    getPerson: function (id) {
-      this.$router.push({ name: "persons.show", params: { id: id } });
-    },
-    /**
-     * Get the primary TV show details by id.
-     * @param id int - tv id
-     */
-    getTvDetails: function (id) {
-      this.$router.push({ name: "tv", params: { id: id } });
     },
   },
   mounted() {

@@ -3,19 +3,19 @@
     <div class="d-flex justify-end mb-8">
       <v-btn class="bg-yellow-accent-4" @click="goBack">Go Back</v-btn>
     </div>
-    <v-row v-if="personCasts">
-      <v-col v-for="cast in personCasts" :key="cast.id" cols="12" md="6">
+    <v-row v-if="credits">
+      <v-col v-for="credit in credits" :key="credit.id" cols="12" md="4">
         <v-row
           v-ripple
           class="border pointer"
           no-gutters
-          @click="getSpecificMovie(cast.id)"
+          @click="getMovieDetails(credit.id)"
         >
           <v-col md="3">
             <v-img
-              v-if="cast.poster_path"
+              v-if="credit.poster_path"
               :height="200"
-              :src="renderPoster(cast.poster_path)"
+              :src="renderPoster(credit.poster_path)"
               :lazy-src="defaultCardImage"
               cover
             ></v-img>
@@ -23,16 +23,16 @@
           </v-col>
           <v-col md="9" class="pa-4">
             <div>
-              <p class="text-h6 mb-2">{{ cast.original_title }}</p>
+              <p class="text-h6 mb-2">{{ credit.original_title }}</p>
               <p class="text-subtitle-2 text-grey-darken-1 mb-4">
-                {{ cast.character }}
+                {{ credit.character }}
               </p>
               <p class="text-grey-darken-1 mb-2">
                 <v-icon color="#FFEB3B" icon="mdi-star" size="x-small"></v-icon>
-                {{ Math.round(cast.vote_average) }}
+                {{ Math.round(credit.vote_average) }}
               </p>
               <p class="text-grey-darken-1 mb-2">
-                {{ parseInt(cast.release_date) }}
+                {{ parseInt(credit.release_date) }}
               </p>
             </div>
           </v-col>
@@ -44,11 +44,11 @@
 
 <script>
 export default {
-  inject: ["apiKey", "renderPoster", "defaultCardImage", "getSpecificMovie"],
+  inject: ["apiKey", "renderPoster", "defaultCardImage", "getMovieDetails"],
   props: ["id"],
   data() {
     return {
-      personCasts: [],
+      credits: [],
     };
   },
   methods: {
@@ -66,7 +66,7 @@ export default {
           });
 
           sortedByPopularity.forEach((element, i) => {
-            this.personCasts.push(element);
+            this.credits.push(element);
           });
         })
         .catch((error) => {});

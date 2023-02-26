@@ -27,23 +27,21 @@
         <div class="mt-4">
           <p class="font-weight-medium">Gender</p>
           <p class="text-grey">
-            {{ personInfo.gender == 1 ? "Female" : "Male" }}
+            {{ formatGender(personInfo.gender) }}
           </p>
         </div>
 
         <div class="mt-4">
           <p class="font-weight-medium">Birthday</p>
           <p class="text-grey">
-            {{ personInfo.birthday ? personInfo.birthday : "No data" }}
+            {{ personInfo.birthday }} {{ formatAge(personInfo.birthday) }}
           </p>
         </div>
 
         <div class="mt-4">
           <p class="font-weight-medium">Place of birth</p>
           <p class="text-grey">
-            {{
-              personInfo.place_of_birth ? personInfo.place_of_birth : "No data"
-            }}
+            {{ personInfo.place_of_birth ? personInfo.place_of_birth : "N/A" }}
           </p>
         </div>
 
@@ -76,17 +74,14 @@
           <h1>{{ personInfo.name }}</h1>
           <p class="font-weight-medium mt-8">Biography</p>
           <p class="mt-4 text-grey-lighten-1">
-            {{
-              personInfo.biography
-                ? personInfo.biography
-                : "No data is available to this person."
-            }}
+            {{ personInfo.biography ? personInfo.biography : "N/A" }}
           </p>
         </div>
 
+        <!-- Movie Credits -->
         <v-row no-gutters class="mt-10">
           <v-col md="9">
-            <p class="text-h4">Known For</p>
+            <p class="text-h4">Movie Credits</p>
           </v-col>
           <v-col md="3" align="end" justify="center">
             <router-link
@@ -101,13 +96,18 @@
             </router-link>
           </v-col>
         </v-row>
-        <v-row v-if="personCasts">
-          <v-col v-for="cast in personCasts" :key="cast.id" cols="12" md="6">
+        <v-row v-if="personMovieCredits">
+          <v-col
+            v-for="cast in personMovieCredits"
+            :key="cast.id"
+            cols="12"
+            md="6"
+          >
             <v-row
               v-ripple
               class="border pointer"
               no-gutters
-              @click="getSpecificMovie(cast.id)"
+              @click="getMovieDetails(cast.id)"
             >
               <v-col md="3">
                 <v-img
@@ -147,6 +147,75 @@
           </v-col>
         </v-row>
 
+        <!-- Tv Credits -->
+        <v-row no-gutters class="mt-10">
+          <v-col md="9">
+            <p class="text-h4">Tv Credits</p>
+          </v-col>
+          <v-col md="3" align="end" justify="center">
+            <router-link
+              :to="{ name: 'persons.tv', params: { id: id } }"
+              class="text-decoration-none"
+            >
+              <v-icon
+                color="#FFD600"
+                icon="mdi-chevron-right"
+                size="x-large"
+              ></v-icon>
+            </router-link>
+          </v-col>
+        </v-row>
+        <v-row v-if="personTvCredits">
+          <v-col
+            v-for="cast in personTvCredits"
+            :key="cast.id"
+            cols="12"
+            md="6"
+          >
+            <v-row
+              v-ripple
+              class="border pointer"
+              no-gutters
+              @click="getTvDetails(cast.id)"
+            >
+              <v-col md="3">
+                <v-img
+                  v-if="cast.poster_path"
+                  :height="200"
+                  :src="renderPoster(cast.poster_path)"
+                  :lazy-src="defaultCardImage"
+                  cover
+                ></v-img>
+                <v-img
+                  v-else
+                  :height="200"
+                  :src="defaultCardImage"
+                  cover
+                ></v-img>
+              </v-col>
+              <v-col md="9" class="pa-4">
+                <div>
+                  <p class="text-h6 mb-2">{{ cast.original_title }}</p>
+                  <p class="text-subtitle-2 text-grey-darken-1 mb-4">
+                    {{ cast.character }}
+                  </p>
+                  <p class="text-grey-darken-1 mb-2">
+                    <v-icon
+                      color="#FFEB3B"
+                      icon="mdi-star"
+                      size="x-small"
+                    ></v-icon>
+                    {{ Math.round(cast.vote_average) }}
+                  </p>
+                  <p class="text-grey-darken-1 mb-2">
+                    {{ parseInt(cast.first_air_date) }}
+                  </p>
+                </div>
+              </v-col>
+            </v-row>
+          </v-col>
+        </v-row>
+
         <!-- Photos -->
         <div class="mt-10" v-if="personImages.length !== 0 && !imagesIsLoading">
           <p class="text-h4 mb-4">Photos</p>
@@ -159,13 +228,13 @@
               closeOnTap: true,
             }"
           >
+            <!-- :data-lg-size="`${image.width}-${image.height}`" -->
             <a
               v-for="(image, i) in personImages"
               :key="i"
               :href="renderPoster(image.file_path)"
               :onBeforeOpen="onBeforeOpen"
               :onBeforeClose="onBeforeClose"
-              :data-lg-size="`${image.width}-${image.height}`"
             >
               <img
                 v-show="i == 0 || openImageGallery == true"
@@ -194,7 +263,8 @@ export default {
   inject: [
     "apiKey",
     "renderPoster",
-    "getSpecificMovie",
+    "getMovieDetails",
+    "getTvDetails",
     "transferToCol",
     "defaultProfilePicture",
     "defaultCardImage",
@@ -205,7 +275,8 @@ export default {
       personInfo: null,
       personImages: [],
       model: 0,
-      personCasts: [],
+      personMovieCredits: [],
+      personTvCredits: [],
       knownForCarousel: 0,
       imagesIsLoading: false,
       plugins: [lgThumbnail, lgZoom],
@@ -223,6 +294,30 @@ export default {
     },
     onBeforeClose: function () {
       this.openImageGallery = false;
+    },
+    formatGender: function (gender) {
+      if (gender == 1) {
+        return "Female";
+      } else if (gender == 2) {
+        return "Male";
+      } else if (gender == 3) {
+        return "Non-binary";
+      } else {
+        return "N/A";
+      }
+    },
+    formatAge(birthdate) {
+      const today = new Date();
+      const birthdateObj = new Date(birthdate);
+      let age = today.getFullYear() - birthdateObj.getFullYear();
+      const monthDiff = today.getMonth() - birthdateObj.getMonth();
+      const dayDiff = today.getDate() - birthdateObj.getDate();
+
+      if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+        age--;
+      }
+
+      return `(${age} years old)`;
     },
     addComma: function (value, i) {
       return this.personInfo.also_known_as.length == i + 1
@@ -257,7 +352,30 @@ export default {
 
           sortedByPopularity.forEach((element, i) => {
             if (i < 4) {
-              this.personCasts.push(element);
+              this.personMovieCredits.push(element);
+            }
+          });
+        })
+        .catch((error) => {});
+    },
+    /**
+     * Get the tv credits for a person.
+     */
+    getPersonTvCredits: function () {
+      fetch(
+        `https://api.themoviedb.org/3/person/${this.id}/tv_credits?api_key=${this.apiKey}&language=en-US`
+      )
+        .then((response) => response.json())
+        .then((result) => {
+          let sortedByPopularity = result.cast.sort(function (a, b) {
+            return b.popularity - a.popularity;
+          });
+
+          // console.log(sortedByPopularity);
+
+          sortedByPopularity.forEach((element, i) => {
+            if (i < 4) {
+              this.personTvCredits.push(element);
             }
           });
         })
@@ -289,12 +407,7 @@ export default {
         `https://api.themoviedb.org/3/person/6384/tagged_images?api_key=fd920f7d47c80b3bf8615aec1773db04&language=en-US&page=1`
       )
         .then((response) => response.json())
-        .then((result) => {
-          // console.log(result);
-          // result.profiles.forEach((element) => {
-          //   this.personImages.push(element);
-          // });
-        })
+        .then((result) => {})
         .catch((error) => {});
     },
   },
@@ -302,11 +415,10 @@ export default {
     this.getPerson();
     this.getPersonMovieCredits();
     this.getPersonImages();
-    // this.getPersonTaggedImages();
+    this.getPersonTvCredits();
   },
   updated() {
     this.getPersonImages();
-    // this.getPersonTaggedImages();
   },
 };
 </script>

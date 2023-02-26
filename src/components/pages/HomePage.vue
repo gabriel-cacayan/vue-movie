@@ -85,7 +85,7 @@
               v-ripple
               height="350"
               width="175"
-              @click="getSpecificMovie(movie.id)"
+              @click="getMovieDetails(movie.id)"
             >
               <v-img
                 :src="renderPoster(movie.poster_path)"
@@ -125,7 +125,7 @@
               v-ripple
               height="350"
               width="175"
-              @click="getSpecificMovie(movie.id)"
+              @click="getMovieDetails(movie.id)"
             >
               <v-img
                 :src="renderPoster(movie.poster_path)"
@@ -165,7 +165,7 @@
               v-ripple
               height="350"
               width="175"
-              @click="getSpecificMovie(movie.id)"
+              @click="getMovieDetails(movie.id)"
             >
               <v-img
                 :src="renderPoster(movie.poster_path)"
@@ -205,7 +205,7 @@
               v-ripple
               height="350"
               width="175"
-              @click="routeToTvDetails(tv.id)"
+              @click="getTvDetails(tv.id)"
             >
               <v-img
                 :src="renderPoster(tv.poster_path)"
@@ -239,11 +239,11 @@
 <script>
 export default {
   inject: [
-    "transferToCol",
     "apiKey",
     "renderPoster",
-    "getSpecificMovie",
     "defaultCardImage",
+    "getMovieDetails",
+    "getTvDetails",
   ],
   data() {
     return {
@@ -326,25 +326,19 @@ export default {
      */
     getPopularTvShows: function () {
       fetch(
-        `https://api.themoviedb.org/3/tv/popular?api_key=${this.apiKey}&language=en-US&page=1`
+        `https://api.themoviedb.org/3/tv/popular?api_key=${this.apiKey}&language=en-US&page=1&`
       )
         .then((response) => response.json())
         .then((result) => {
-          result.results.forEach((element) => {
+          let onlyEn = result.results.filter(
+            (result) => result.original_language == "en"
+          );
+
+          onlyEn.forEach((element) => {
             this.popularTvShows.push(element);
           });
         })
         .catch((error) => {});
-    },
-    /**
-     * Route to details of tv.
-     * @param id int - tv id
-     */
-    routeToTvDetails: function (id) {
-      this.$router.push({
-        name: "tv",
-        params: { id: id },
-      });
     },
     /**
      * Get Avatar movi to make it landing page

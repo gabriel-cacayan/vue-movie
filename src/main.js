@@ -5,13 +5,15 @@ import { loadFonts } from "./plugins/webfontloader";
 import { createRouter, createWebHistory } from "vue-router";
 import MovieDetails from "./components/pages/Movies/MovieDetails.vue";
 import HomePage from "./components/pages/HomePage.vue";
-import PersonDetails from "./components/pages/PersonDetails.vue";
+import PersonDetails from "./components/pages/Person/PersonDetails.vue";
 import NotFound from "./components/NotFound.vue";
 import SearchResult from "./components/pages/Search/SearchResult.vue";
 import FindMovie from "./components/pages/Search/FindMovie.vue";
 import TvDetails from "./components/pages/TV/TvDetails.vue";
-import PersonMovies from "./components/pages/PersonMovies.vue";
+import MovieCredits from "./components/pages/Person/MovieCredits.vue";
 import TvCasts from "./components/pages/TV/TvCasts.vue";
+import TvPage from "./components/pages/TvPage.vue";
+import TvCredits from "./components/pages/Person/TvCredits.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -24,6 +26,21 @@ const router = createRouter({
       path: "/",
       name: "home",
       component: HomePage,
+    },
+    {
+      path: "/tv/",
+      name: "tv.index",
+      component: TvPage,
+    },
+    {
+      path: "/find-a-movie/",
+      name: "find",
+      component: FindMovie,
+    },
+    {
+      path: "/search/",
+      name: "search",
+      component: SearchResult,
     },
     {
       path: "/movie/:id(\\d+)",
@@ -40,23 +57,25 @@ const router = createRouter({
     {
       path: "/person/:id(\\d+)/movies",
       name: "persons.movie",
-      component: PersonMovies,
+      component: MovieCredits,
       props: true,
     },
     {
-      path: "/find-a-movie/",
-      name: "find",
-      component: FindMovie,
-    },
-    {
-      path: "/search/",
-      name: "search",
-      component: SearchResult,
+      path: "/person/:id(\\d+)/tv",
+      name: "persons.tv",
+      component: TvCredits,
+      props: true,
     },
     {
       path: "/tv/:id(\\d+)",
       name: "tv",
       component: TvDetails,
+      props: true,
+    },
+    {
+      path: "/tv/:id(\\d+)/casts",
+      name: "tv.casts",
+      component: TvCasts,
       props: true,
     },
     {

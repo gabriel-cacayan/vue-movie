@@ -364,8 +364,8 @@ export default {
       }).format(this.movieInfo.revenue);
     },
     runtime() {
-      var hours = Math.floor(this.movieInfo.runtime / 60);
-      var minutes = this.movieInfo.runtime % 60;
+      let hours = Math.floor(this.movieInfo.runtime / 60);
+      let minutes = this.movieInfo.runtime % 60;
       return hours + "h " + minutes + "m";
     },
   },

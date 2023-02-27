@@ -81,7 +81,7 @@
         </div>
 
         <!-- Movie Credits -->
-        <v-container v-if="personMovieCredits && !isLoading">
+        <v-container v-if="personMovieCredits.length > 0 && !isLoading">
           <v-row no-gutters class="mt-10">
             <v-col md="9">
               <p class="text-h4">Movie Credits</p>
@@ -152,7 +152,7 @@
         </v-container>
 
         <!-- Tv Credits -->
-        <v-container v-if="personTvCredits && !isLoading">
+        <v-container v-if="personTvCredits.length > 0 && !isLoading">
           <v-row no-gutters class="mt-10">
             <v-col md="9">
               <p class="text-h4">Tv Credits</p>

@@ -221,7 +221,7 @@
                 cover
               ></v-img>
 
-              <v-card-title>{{ tv.original_title }}</v-card-title>
+              <v-card-title>{{ tv.name }}</v-card-title>
 
               <v-card-subtitle class="d-flex mb-4">
                 <div>

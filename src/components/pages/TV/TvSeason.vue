@@ -44,7 +44,7 @@
                   {{ episode.episode_number + "." }} {{ episode.name }}
                 </p>
                 <p class="text-subtitle-2 text-grey-darken-1 mb-4">
-                  {{ episode.runtime + "m" }} |
+                  {{ runtime(episode.runtime) }} |
                   {{ episode.air_date ? parseInt(episode.air_date) : "N/A" }}
                 </p>
                 <p class="text-caption">
@@ -103,6 +103,15 @@ export default {
           episodeNumber: episodeNumber,
         },
       });
+    },
+    runtime(runtime) {
+      let hours = Math.floor(runtime / 60);
+      let minutes = runtime % 60;
+      if (hours > 0) {
+        return hours + "h " + minutes + "m";
+      } else {
+        return minutes + "m";
+      }
     },
   },
   mounted() {

@@ -17,11 +17,13 @@
       <div id="overlay"></div>
     </div>
 
-    <v-container>
+    <v-container class="pa-0">
       <v-row v-if="episodeInfo && !isLoading" class="d-none d-md-flex">
-        <v-col>
+        <v-col cols="12">
           <h1>{{ episodeInfo.name }}</h1>
-          <p class="text-grey-lighten-1 mb-4">{{ episodeInfo.air_date }}</p>
+          <p class="text-yellow-accent-4 mb-4">
+            S{{ seasonNumber }}.E{{ episodeNumber }}
+          </p>
           <p class="text-grey-lighten-3 mb-4 pr-2">
             {{ episodeInfo.overview }}
           </p>
@@ -51,7 +53,9 @@
       </div>
       <div class="pa-4">
         <h1>{{ episodeInfo.name }}</h1>
-        <p class="text-grey-lighten-1 mb-4">{{ episodeInfo.air_date }}</p>
+        <p class="text-yellow-accent-4 mb-4">
+          S{{ seasonNumber }}.E{{ episodeNumber }}
+        </p>
         <p class="text-grey-lighten-3 mb-4 pr-2">{{ episodeInfo.overview }}</p>
       </div>
     </div>
@@ -83,6 +87,91 @@
         </a>
       </lightgallery>
     </v-container>
+
+    <!-- Guest Stars -->
+    <v-container v-if="episodeInfo" class="my-10">
+      <v-row no-gutters>
+        <v-col cols="12">
+          <p class="text-h4">Guest Stars</p>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col
+          v-for="guest in episodeInfo.guest_stars"
+          :key="guest.id"
+          cols="12"
+          md="4"
+        >
+          <v-row
+            v-ripple
+            class="border pointer"
+            no-gutters
+            @click="getPersonDetails(guest.id)"
+          >
+            <v-col md="4">
+              <v-img
+                v-if="guest.profile_path"
+                :height="200"
+                :src="renderPoster(guest.profile_path)"
+                :lazy-src="defaultCardImage"
+                cover
+              ></v-img>
+              <v-img v-else :height="200" :src="defaultCardImage" cover></v-img>
+            </v-col>
+            <v-col md="8" class="pa-4">
+              <div>
+                <p class="text-h6 mb-2">{{ guest.original_name }}</p>
+                <p class="text-subtitle-2 text-grey-darken-1 mb-4">
+                  {{ guest.character }}
+                </p>
+              </div>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
+    </v-container>
+
+    <!-- Crews -->
+    <v-container v-if="episodeInfo" class="my-10">
+      <v-row no-gutters>
+        <v-col cols="12">
+          <p class="text-h4">Crew</p>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col v-for="crew in episodeInfo.crew" :key="crew.id" cols="12" md="4">
+          <v-row
+            v-ripple
+            class="border pointer"
+            no-gutters
+            @click="getPersonDetails(crew.id)"
+          >
+            <v-col md="4">
+              <v-img
+                v-if="crew.profile_path"
+                :height="200"
+                :src="renderPoster(crew.profile_path)"
+                :lazy-src="defaultCardImage"
+                cover
+              ></v-img>
+              <v-img v-else :height="200" :src="defaultCardImage" cover></v-img>
+            </v-col>
+            <v-col md="8" class="pa-4">
+              <div>
+                <p class="text-h6 mb-2">{{ crew.original_name }}</p>
+                <p class="text-subtitle-2 text-grey-darken-1 mb-4">
+                  {{ crew.job }} | {{ crew.department }}
+                </p>
+              </div>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
+    </v-container>
+
+    <!-- <v-container v-if="episodeInfo">
+      <pre>{{ episodeInfo }}</pre>
+    </v-container> -->
   </v-container>
 </template>
 
@@ -95,7 +184,7 @@ export default {
   components: {
     Lightgallery,
   },
-  inject: ["apiKey", "renderPoster", "defaultCardImage"],
+  inject: ["apiKey", "renderPoster", "defaultCardImage", "getPersonDetails"],
   props: ["id", "seasonNumber", "episodeNumber"],
   data() {
     return {
@@ -123,7 +212,7 @@ https://api.themoviedb.org/3/tv/${this.id}/season/${this.seasonNumber}/episode/$
       )
         .then((response) => response.json())
         .then((result) => {
-          console.log(result);
+          // console.log(result);
           this.episodeInfo = result;
           this.isLoading = false;
         })
@@ -150,7 +239,7 @@ https://api.themoviedb.org/3/tv/${this.id}/season/${this.seasonNumber}/episode/$
   width: 100vw;
   height: 100vh;
   background: #000;
-  opacity: 0.6;
+  opacity: 0.4;
   top: 0;
   right: 0;
   bottom: 0;

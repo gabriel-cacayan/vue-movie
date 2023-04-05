@@ -324,9 +324,9 @@ export default {
     /**
      * Get Avatar movi to make it landing page
      */
-    getAvatar() {
+    getLandingMovie() {
       fetch(
-        `https://api.themoviedb.org/3/movie/76600?api_key=${this.apiKey}&language=en-US`
+        `https://api.themoviedb.org/3/movie/603692?api_key=${this.apiKey}&language=en-US`
       )
         .then((response) => response.json())
         .then((result) => {
@@ -336,7 +336,7 @@ export default {
     },
   },
   mounted() {
-    this.getAvatar();
+    this.getLandingMovie();
     this.getPopularMovies();
     this.getTopRatedMovies();
     this.getUpcomingMovies();

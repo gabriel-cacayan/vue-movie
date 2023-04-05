@@ -13,7 +13,12 @@
       "
       class="pa-4 my-10"
     >
-      <v-select label="Select" :items="items" v-model="criteria"></v-select>
+      <v-select
+        label="Select"
+        :items="items"
+        v-model="criteria"
+        class="mb-10"
+      ></v-select>
       <v-row>
         <v-col v-for="tv in popularTvShows" :key="tv.id" cols="6" md="3">
           <v-card class="mx-auto" hover v-ripple>
@@ -47,7 +52,7 @@
             </v-card-subtitle>
           </v-card>
         </v-col>
-        <v-col cols="12">
+        <v-col cols="12" class="mt-16">
           <v-pagination :length="totalPages" v-model="page"></v-pagination>
         </v-col>
       </v-row>
@@ -62,7 +67,12 @@
       "
       class="pa-4 my-10"
     >
-      <v-select label="Select" :items="items" v-model="criteria"></v-select>
+      <v-select
+        label="Select"
+        :items="items"
+        v-model="criteria"
+        class="mb-10"
+      ></v-select>
       <v-row>
         <v-col v-for="tv in TopRatedTvShows" :key="tv.id" cols="6" md="3">
           <v-card class="mx-auto" hover v-ripple>
@@ -96,7 +106,7 @@
             </v-card-subtitle>
           </v-card>
         </v-col>
-        <v-col cols="12">
+        <v-col cols="12" class="mt-16">
           <v-pagination :length="totalPages" v-model="page"></v-pagination>
         </v-col>
       </v-row>

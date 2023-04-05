@@ -229,6 +229,8 @@
 </template>
 
 <script>
+import Axios from "../../apis/Axios";
+
 export default {
   inject: [
     "apiKey",
@@ -254,14 +256,17 @@ export default {
      */
     getPopularMovies() {
       this.isLoading = true;
-      fetch(
-        `https://api.themoviedb.org/3/movie/popular?api_key=${this.apiKey}&language=en-US&page=1`
-      )
-        .then((response) => response.json())
-        .then((result) => {
-          result.results.forEach((element) => {
+
+      Axios.get(`movie/popular`, {
+        params: {
+          api_key: this.apiKey,
+        },
+      })
+        .then((response) => {
+          response.data.results.forEach((element) => {
             this.popularMovies.push(element);
           });
+
           this.isLoading = false;
         })
         .catch((error) => {});

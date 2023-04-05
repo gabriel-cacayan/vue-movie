@@ -129,7 +129,7 @@ export default {
     /**
      * This is a release type query that looks for all movies that have a release type of 2 or 3 within the specified date range.
      */
-    getPopularTvShows: function () {
+    getPopularTvShows() {
       this.isLoading = true;
 
       fetch(
@@ -151,7 +151,7 @@ export default {
         })
         .catch((error) => {});
     },
-    getTopRated: function () {
+    getTopRated() {
       this.isLoading = true;
 
       fetch(

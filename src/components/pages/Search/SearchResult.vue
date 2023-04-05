@@ -132,7 +132,7 @@ export default {
     /**
      * Search a movie from api.
      */
-    searchMovie: function (search, criteria) {
+    searchMovie(search, criteria) {
       if (criteria == "Movie") {
         fetch(
           `

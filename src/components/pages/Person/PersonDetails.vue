@@ -299,13 +299,13 @@ export default {
     };
   },
   methods: {
-    onBeforeOpen: function () {
+    onBeforeOpen() {
       this.openImageGallery = true;
     },
-    onBeforeClose: function () {
+    onBeforeClose() {
       this.openImageGallery = false;
     },
-    formatGender: function (gender) {
+    formatGender(gender) {
       if (gender == 1) {
         return "Female";
       } else if (gender == 2) {
@@ -329,7 +329,7 @@ export default {
 
       return `(${age} years old)`;
     },
-    addComma: function (value, i) {
+    addComma(value, i) {
       return this.personInfo.also_known_as.length == i + 1
         ? value
         : value + ",";
@@ -337,7 +337,7 @@ export default {
     /**
      * Get the primary person details by id.
      */
-    getPerson: function () {
+    getPerson() {
       this.isLoading = true;
       fetch(
         `https://api.themoviedb.org/3/person/${this.id}?api_key=${this.apiKey}&language=en-US`
@@ -352,7 +352,7 @@ export default {
     /**
      * Get the movie credits for a person.
      */
-    getPersonMovieCredits: function () {
+    getPersonMovieCredits() {
       fetch(
         `https://api.themoviedb.org/3/person/${this.id}/movie_credits?api_key=${this.apiKey}&language=en-US`
       )
@@ -373,7 +373,7 @@ export default {
     /**
      * Get the tv credits for a person.
      */
-    getPersonTvCredits: function () {
+    getPersonTvCredits() {
       fetch(
         `https://api.themoviedb.org/3/person/${this.id}/tv_credits?api_key=${this.apiKey}&language=en-US`
       )
@@ -396,7 +396,7 @@ export default {
     /**
      * Get the images for a person.
      */
-    getPersonImages: function () {
+    getPersonImages() {
       this.imagesIsLoading = true;
       fetch(
         `https://api.themoviedb.org/3/person/${this.id}/images?api_key=${this.apiKey}`
@@ -414,7 +414,7 @@ export default {
     /**
      * Get tagged images for a person.
      */
-    getPersonTaggedImages: function () {
+    getPersonTaggedImages() {
       fetch(
         `https://api.themoviedb.org/3/person/6384/tagged_images?api_key=fd920f7d47c80b3bf8615aec1773db04&language=en-US&page=1`
       )

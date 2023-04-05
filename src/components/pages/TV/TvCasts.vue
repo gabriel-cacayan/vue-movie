@@ -63,7 +63,7 @@ export default {
      *  Get the aggregate credits (cast and crew) that have been added to a TV show.
      * @param id int - tv id
      */
-    getTvCredits: function (id) {
+    getTvCredits(id) {
       this.isLoading = true;
 
       fetch(

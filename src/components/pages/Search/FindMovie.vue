@@ -37,7 +37,7 @@ export default {
     /**
      * Search a movie from api.
      */
-    searchMovie: function () {
+    searchMovie() {
       this.$router.push({
         name: "search",
         query: { search: this.search, criteria: this.filter },

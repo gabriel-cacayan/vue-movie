@@ -57,7 +57,7 @@ export default {
     /**
      * Get the movie credits for a person.
      */
-    getPersonMovieCredits: function () {
+    getPersonMovieCredits() {
       fetch(
         `https://api.themoviedb.org/3/person/${this.id}/movie_credits?api_key=${this.apiKey}&language=en-US`
       )

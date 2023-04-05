@@ -55,7 +55,7 @@ export default {
     /**
      * Get the tv credits for a person.
      */
-    getPersonTvCredits: function () {
+    getPersonTvCredits() {
       fetch(
         `https://api.themoviedb.org/3/person/${this.id}/tv_credits?api_key=${this.apiKey}&language=en-US`
       )

@@ -91,10 +91,10 @@ export default {
         })
         .catch((error) => {});
     },
-    goBack: function () {
+    goBack() {
       this.$router.go(-1);
     },
-    goToEpisode: function (episodeNumber) {
+    goToEpisode(episodeNumber) {
       this.$router.push({
         name: "tv.episode",
         params: {

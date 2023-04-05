@@ -326,7 +326,7 @@ export default {
     /**
      * Add dash to companies
      */
-    addDash: function (lists, production, i) {
+    addDash(lists, production, i) {
       if (lists.length == i + 1) {
         return production.name;
       } else {
@@ -337,7 +337,7 @@ export default {
      * Get the primary information about a movie.
      * @param id int - movie id
      */
-    getSpecificMovie: function (id) {
+    getSpecificMovie(id) {
       this.isLoading = true;
       if (this.$route.params.id !== id) {
         this.$router.push({ name: "movies.show", params: { id: id } });
@@ -357,7 +357,7 @@ export default {
      * Get the cast and crew for a movie.
      * @param id int - movie id
      */
-    getCredits: function (id) {
+    getCredits(id) {
       fetch(
         `https://api.themoviedb.org/3/movie/${id}/credits?api_key=${this.apiKey}&language=en-US`
       )
@@ -378,7 +378,7 @@ export default {
      * Get a list of recommended movies for a movie.
      * @param id int - movie id
      */
-    getRecommendations: function (id) {
+    getRecommendations(id) {
       fetch(
         `https://api.themoviedb.org/3/movie/${id}/recommendations?api_key=${this.apiKey}&language=en-US&page=1`
       )
@@ -394,11 +394,11 @@ export default {
      * Get the primary person details by id.
      * @param id int - cast id
      */
-    getPerson: function (id) {
+    getPerson(id) {
       this.$router.push({ name: "persons.show", params: { id: id } });
     },
   },
-  mounted: function () {
+  mounted() {
     this.getSpecificMovie(this.id);
     this.getCredits(this.id);
     this.getRecommendations(this.id);

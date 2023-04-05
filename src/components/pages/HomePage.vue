@@ -252,7 +252,7 @@ export default {
     /**
      * Get a list of the current popular movies on TMDB. This list updates daily.
      */
-    getPopularMovies: function () {
+    getPopularMovies() {
       this.isLoading = true;
       fetch(
         `https://api.themoviedb.org/3/movie/popular?api_key=${this.apiKey}&language=en-US&page=1`
@@ -269,7 +269,7 @@ export default {
     /**
      * Get the top rated movies on TMDB.
      */
-    getTopRatedMovies: function () {
+    getTopRatedMovies() {
       fetch(
         `https://api.themoviedb.org/3/movie/top_rated?api_key=${this.apiKey}&language=en-US&page=1`
       )
@@ -285,7 +285,7 @@ export default {
      * Get a list of upcoming movies in theatres.
      * This is a release type query that looks for all movies that have a release type of 2 or 3 within the specified date range.
      */
-    getUpcomingMovies: function () {
+    getUpcomingMovies() {
       fetch(
         `https://api.themoviedb.org/3/movie/upcoming?api_key=${this.apiKey}&language=en-US&page=1`
       )
@@ -300,7 +300,7 @@ export default {
     /**
      * This is a release type query that looks for all movies that have a release type of 2 or 3 within the specified date range.
      */
-    getPopularTvShows: function () {
+    getPopularTvShows() {
       fetch(
         `https://api.themoviedb.org/3/tv/popular?api_key=${this.apiKey}&language=en-US&page=1&`
       )
@@ -319,7 +319,7 @@ export default {
     /**
      * Get Avatar movi to make it landing page
      */
-    getAvatar: function () {
+    getAvatar() {
       fetch(
         `https://api.themoviedb.org/3/movie/76600?api_key=${this.apiKey}&language=en-US`
       )
@@ -330,7 +330,7 @@ export default {
         .catch((error) => {});
     },
   },
-  mounted: function () {
+  mounted() {
     this.getAvatar();
     this.getPopularMovies();
     this.getTopRatedMovies();

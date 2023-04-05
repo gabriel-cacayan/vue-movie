@@ -367,17 +367,17 @@ export default {
     },
   },
   methods: {
-    onBeforeOpen: function () {
+    onBeforeOpen() {
       this.openImageGallery = true;
     },
-    onBeforeClose: function () {
+    onBeforeClose() {
       this.openImageGallery = false;
     },
     /**
      * Get a companies details by id.
      * @param id int - company id
      */
-    getCompanyHomepage: function (id) {
+    getCompanyHomepage(id) {
       this.companyIsLoading = true;
       fetch(`https://api.themoviedb.org/3/company/${id}?api_key=${this.apiKey}`)
         .then((response) => response.json())
@@ -387,7 +387,7 @@ export default {
     /**
      * Add dash to companies
      */
-    addDash: function (lists, production, i) {
+    addDash(lists, production, i) {
       if (lists.length == i + 1) {
         return production.name;
       } else {
@@ -398,14 +398,14 @@ export default {
      * Pluralize the word episode based on count
      * @param episode int - episode count
      */
-    pluralizeTheEpisode: function (episode) {
+    pluralizeTheEpisode(episode) {
       return episode > 1 ? episode + " Episodes" : episode + " Episode";
     },
     /**
      * Get the primary TV show details by id.
      * @param id int - tv id
      */
-    getTvDetails: function (id) {
+    getTvDetails(id) {
       this.isLoading = true;
       this.imagesIsLoading = true;
       // &append_to_response=videos,images
@@ -432,7 +432,7 @@ export default {
      *  Get the aggregate credits (cast and crew) that have been added to a TV show.
      * @param id int - tv id
      */
-    getTvCredits: function (id) {
+    getTvCredits(id) {
       this.isLoading = true;
 
       fetch(
@@ -454,7 +454,7 @@ export default {
     /**
      * @param id int - season id
      */
-    goToSeason: function (seasonNumber) {
+    goToSeason(seasonNumber) {
       this.$router.push({
         name: "tv.season",
         params: { id: this.id, seasonNumber: seasonNumber },

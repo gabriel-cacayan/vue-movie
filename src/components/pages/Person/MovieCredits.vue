@@ -32,7 +32,9 @@
                 {{ Math.round(credit.vote_average) }}
               </p>
               <p class="text-grey-darken-1 mb-2">
-                {{ parseInt(credit.release_date) }}
+                {{
+                  credit.release_date ? parseInt(credit.release_date) : "N/A"
+                }}
               </p>
             </div>
           </v-col>

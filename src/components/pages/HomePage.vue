@@ -43,28 +43,8 @@
           <p class="text-grey-lighten-3 mb-4 pr-2">
             {{ landingInfo.overview }}
           </p>
-          <p class="mb-4">
-            Genres:
-            <template v-for="genre in landingInfo.genres" :key="genre.id">
-              <v-chip class="mr-2">
-                {{ genre.name }}
-              </v-chip>
-            </template>
-          </p>
-          <p class="mb-4">
-            Budget:
-            {{ budget }}
-          </p>
-          <p class="mb-4">
-            Revenue:
-            {{ revenue }}
-          </p>
-          <p class="mb-4">
-            Runtime:
-            {{ runtime }}
-          </p>
           <v-btn
-            class="bg-yellow-accent-4"
+            class="mt-4 bg-yellow-accent-4"
             :to="{ name: 'movies.show', params: { id: landingInfo.id } }"
             >View Details</v-btn
           >
@@ -110,7 +90,9 @@
                 </div>
                 <v-spacer></v-spacer>
                 <p>
-                  {{ parseInt(movie.release_date) }}
+                  {{
+                    movie.release_date ? parseInt(movie.release_date) : "N/A"
+                  }}
                 </p>
               </v-card-subtitle>
             </v-card>
@@ -150,7 +132,9 @@
                 </div>
                 <v-spacer></v-spacer>
                 <p>
-                  {{ parseInt(movie.release_date) }}
+                  {{
+                    movie.release_date ? parseInt(movie.release_date) : "N/A"
+                  }}
                 </p>
               </v-card-subtitle>
             </v-card>
@@ -190,7 +174,9 @@
                 </div>
                 <v-spacer></v-spacer>
                 <p>
-                  {{ parseInt(movie.release_date) }}
+                  {{
+                    movie.release_date ? parseInt(movie.release_date) : "N/A"
+                  }}
                 </p>
               </v-card-subtitle>
             </v-card>
@@ -230,7 +216,7 @@
                 </div>
                 <v-spacer></v-spacer>
                 <p>
-                  {{ parseInt(tv.first_air_date) }}
+                  {{ tv.first_air_date ? parseInt(tv.first_air_date) : "N/A" }}
                 </p>
               </v-card-subtitle>
             </v-card>
@@ -261,25 +247,6 @@ export default {
       landingInfo: null,
       isLoading: false,
     };
-  },
-  computed: {
-    budget() {
-      return new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(this.landingInfo.budget);
-    },
-    revenue() {
-      return new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(this.landingInfo.revenue);
-    },
-    runtime() {
-      var hours = Math.floor(this.landingInfo.runtime / 60);
-      var minutes = this.landingInfo.runtime % 60;
-      return hours + "h " + minutes + "m";
-    },
   },
   methods: {
     /**

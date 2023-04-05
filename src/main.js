@@ -16,6 +16,7 @@ import TvPage from "./components/pages/TvPage.vue";
 import TvCredits from "./components/pages/Person/TvCredits.vue";
 import TvSeason from "./components/pages/TV/TvSeason.vue";
 import TvEpisode from "./components/pages/TV/TvEpisode.vue";
+import MovieCasts from "./components/pages/Movies/MovieCasts.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -48,6 +49,12 @@ const router = createRouter({
       path: "/movie/:id(\\d+)",
       name: "movies.show",
       component: MovieDetails,
+      props: true,
+    },
+    {
+      path: "/movie/:id(\\d+)/casts",
+      name: "movies.casts",
+      component: MovieCasts,
       props: true,
     },
     {

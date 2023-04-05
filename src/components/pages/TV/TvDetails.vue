@@ -96,17 +96,6 @@
             </v-chip>
           </template>
         </p>
-        <!-- <p class="my-4 d-flex flex-row">
-          <template
-            v-for="created_by in tvInfo.created_by"
-            :key="created_by.id"
-          >
-            <div class="mr-10">
-              <h3>{{ created_by.name }}</h3>
-              <p>Creator</p>
-            </div>
-          </template>
-        </p> -->
         <v-col
           v-for="created_by in tvInfo.created_by"
           :key="created_by.id"
@@ -335,10 +324,6 @@
         </v-col>
       </v-row>
     </v-container>
-
-    <!-- <v-container>
-    <pre>{{ tvInfo }}</pre>
-  </v-container> -->
   </v-container>
 </template>
 

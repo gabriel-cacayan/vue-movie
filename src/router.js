@@ -1,18 +1,19 @@
 import { createRouter, createWebHistory } from "vue-router";
-import MovieDetails from "./components/pages/Movies/MovieDetails.vue";
-import HomePage from "./components/pages/HomePage.vue";
-import PersonDetails from "./components/pages/Person/PersonDetails.vue";
-import NotFound from "./components/pages/NotFound.vue";
-import SearchResult from "./components/pages/Search/SearchResult.vue";
-import FindMovie from "./components/pages/Search/FindMovie.vue";
-import TvDetails from "./components/pages/TV/TvDetails.vue";
-import MovieCredits from "./components/pages/Person/MovieCredits.vue";
-import TvCasts from "./components/pages/TV/TvCasts.vue";
-import TvPage from "./components/pages/TvPage.vue";
-import TvCredits from "./components/pages/Person/TvCredits.vue";
-import TvSeason from "./components/pages/TV/TvSeason.vue";
-import TvEpisode from "./components/pages/TV/TvEpisode.vue";
-import MovieCasts from "./components/pages/Movies/MovieCasts.vue";
+import MovieDetails from "./components/pages/Movies/MovieDetails";
+import HomePage from "./components/pages/HomePage";
+import PersonDetails from "./components/pages/Person/PersonDetails";
+import NotFound from "./components/pages/NotFound";
+import SearchResult from "./components/pages/Search/SearchResult";
+import FindMovie from "./components/pages/Search/FindMovie";
+import TvDetails from "./components/pages/TV/TvDetails";
+import MovieCredits from "./components/pages/Person/MovieCredits";
+import TvCasts from "./components/pages/TV/TvCasts";
+import TvPage from "./components/pages/TvPage";
+import TvCredits from "./components/pages/Person/TvCredits";
+import TvSeason from "./components/pages/TV/TvSeason";
+import TvEpisode from "./components/pages/TV/TvEpisode";
+import MovieCasts from "./components/pages/Movies/MovieCasts";
+// import MovieCasts from "@/components/pages/Movies/MovieCasts";
 
 const router = createRouter({
   history: createWebHistory(),

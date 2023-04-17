@@ -7,18 +7,16 @@
     ></v-progress-linear>
 
     <!-- Search Result For Tvs  -->
+    <v-container class="pa-4 my-10">
+      <v-select label="Select" :items="items" v-model="criteria"></v-select>
+    </v-container>
+
     <v-container
       v-if="
         criteria == 'Popular' && popularTvShows.length != 0 && isLoading != true
       "
       class="pa-4 my-10"
     >
-      <v-select
-        label="Select"
-        :items="items"
-        v-model="criteria"
-        class="mb-10"
-      ></v-select>
       <v-row>
         <v-col v-for="tv in popularTvShows" :key="tv.id" cols="6" md="3">
           <v-card class="mx-auto" hover v-ripple>
@@ -67,12 +65,6 @@
       "
       class="pa-4 my-10"
     >
-      <v-select
-        label="Select"
-        :items="items"
-        v-model="criteria"
-        class="mb-10"
-      ></v-select>
       <v-row>
         <v-col v-for="tv in TopRatedTvShows" :key="tv.id" cols="6" md="3">
           <v-card class="mx-auto" hover v-ripple>

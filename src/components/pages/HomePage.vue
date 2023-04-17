@@ -187,7 +187,7 @@
 
     <!-- Popular TV Shows -->
     <div v-if="popularTvShows && !isLoading">
-      <h1 class="text-h5 ma-4">Popular TV Shows</h1>
+      <h1 class="text-h5 ma-4">Top Rated TV Shows</h1>
       <v-sheet class="my-10 mx-auto">
         <v-slide-group v-model="model" class="pa-4 bg-black" show-arrows>
           <v-slide-group-item v-for="tv in popularTvShows" :key="tv.id">
@@ -305,9 +305,9 @@ export default {
     /**
      * This is a release type query that looks for all movies that have a release type of 2 or 3 within the specified date range.
      */
-    getPopularTvShows() {
+    getTopRatedTvShows() {
       fetch(
-        `https://api.themoviedb.org/3/tv/popular?api_key=${this.apiKey}&language=en-US&page=1&`
+        `https://api.themoviedb.org/3/tv/top_rated?api_key=${this.apiKey}&language=en-US&page=1&`
       )
         .then((response) => response.json())
         .then((result) => {
@@ -340,7 +340,7 @@ export default {
     this.getPopularMovies();
     this.getTopRatedMovies();
     this.getUpcomingMovies();
-    this.getPopularTvShows();
+    this.getTopRatedTvShows();
   },
 };
 </script>

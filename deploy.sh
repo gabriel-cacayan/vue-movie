@@ -14,7 +14,7 @@ cd dist
 
 git init
 git add -A
-git commit -m 'Deploy vue.js project'
+git commit -m 'Initial Commit'
 git branch -M main
 git push -f git@github.com:gabriel-cacayan/vue-movie.git main:gh-pages
 

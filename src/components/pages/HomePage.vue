@@ -248,6 +248,7 @@ export default {
       popularTvShows: [],
       landingInfo: null,
       isLoading: false,
+      randomMovieId: null,
     };
   },
   methods: {
@@ -325,12 +326,18 @@ export default {
      * Get Avatar movi to make it landing page
      */
     getLandingMovie() {
-      fetch(
-        `https://api.themoviedb.org/3/movie/603692?api_key=${this.apiKey}&language=en-US`
-      )
-        .then((response) => response.json())
-        .then((result) => {
-          this.landingInfo = result;
+      this.isLoading = true;
+
+      Axios.get(`movie/popular`, {
+        params: {
+          api_key: this.apiKey,
+        },
+      })
+        .then((response) => {
+          this.landingInfo =
+            response.data.results[Math.floor(Math.random() * 20)];
+
+          this.isLoading = false;
         })
         .catch((error) => {});
     },
